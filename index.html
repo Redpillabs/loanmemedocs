@@ -1223,16 +1223,6 @@
   .flow .bs    { font-size: 10.5px; fill: var(--ink-3); font-family: var(--font-sans); }
   .flow .el    { font-size: 10px; fill: var(--ink-3); font-family: var(--font-sans); letter-spacing: .1em; text-transform: uppercase; }
 
-  /* Sign-off register: every parameter still waiting on a number */
-  .signoff { display: flex; flex-direction: column; border-top: 1px solid var(--line); max-width: 78ch; }
-  .signoff > div {
-    display: grid; grid-template-columns: 1fr; gap: 2px 18px;
-    padding: 11px 0; border-bottom: 1px solid var(--line); align-items: baseline;
-  }
-  @media (min-width: 680px) { .signoff > div { grid-template-columns: 1fr 150px 92px; } }
-  .signoff .p  { font-size: 14.2px; color: var(--ink); }
-  .signoff .o  { font-family: var(--font-sans); font-size: 12.2px; color: var(--ink-3); }
-  .signoff .w  { font-family: var(--font-sans); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
 
   /* ══ Formula window ═══════════════════════════════════════════════════
      A display expression framed as a small window: a title bar naming what
@@ -1662,7 +1652,7 @@
 
     <p class="nav-note">
       <strong>Nothing is deployed.</strong> Every number marked
-      <span class="badge badge-open">TBD</span> is not signed off. The full list is on
+      <span class="badge badge-open">TBD</span> is not signed off yet. See
       <a href="#roadmap">Roadmap and status</a>.
     </p>
   </nav>
@@ -1816,7 +1806,7 @@
         </a>
         <a class="card" href="#roadmap">
           <span class="ct">Roadmap and status</span>
-          <span class="cd">Nothing is deployed. Every parameter still unsigned, in one list.</span>
+          <span class="cd">Nothing is deployed. What has to happen before it is.</span>
         </a>
       </div>
     </article>
@@ -1858,9 +1848,9 @@
       <ol class="stepcards">
         <li>
           <div class="sc-head"><span class="sc-num">01</span><span class="sc-title">Parameters signed off</span><span class="sc-flow">where we are</span></div>
-          <p>Every number in these docs currently marked <span class="badge badge-open">TBD</span> gets a value, a rationale and an owner. The register below is that list.</p>
+          <p>Every number in these docs currently marked <span class="badge badge-open">TBD</span> gets a value, a rationale and an owner.</p>
           <div class="sc-facts">
-            <div><span class="k">Exit when</span><span class="v">The register is empty</span></div>
+            <div><span class="k">Exit when</span><span class="v">No TBD is left in these docs</span></div>
             <div><span class="k">Date</span><span class="v"><span class="badge badge-open">TBD</span></span></div>
           </div>
         </li>
@@ -1901,36 +1891,6 @@
           <p>A second chain only after the first has been through a full cycle including at least one liquidation cascade. The chains table on <a href="#oracle">Oracle and listing</a> stays empty until each one is actually live.</p>
         </li>
       </ol>
-
-      <h2 id="h-register">Parameters awaiting sign-off</h2>
-      <p>
-        Every <span class="badge badge-open">TBD</span> in these docs, in one place, with
-        the page it lives on and who owns the number. Nothing on this list has a value yet.
-        Where a page states a formula, the formula is settled and only the inputs are open.
-      </p>
-      <div class="signoff">
-        <div><span class="p">TWAP window length, per league</span><span class="o"><a href="#oracle">Oracle and listing</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Staleness bound, and what a stale price does</span><span class="o"><a href="#oracle">Oracle and listing</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Minimum observation cardinality</span><span class="o"><a href="#oracle">Oracle and listing</a></span><span class="w">Engineering</span></div>
-        <div><span class="p">Maximum price deviation per update</span><span class="o"><a href="#oracle">Oracle and listing</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Minimum pool liquidity to list</span><span class="o"><a href="#oracle">Oracle and listing</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Minimum age per league</span><span class="o"><a href="#leagues">Leagues and rank</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Max LTV and liquidation threshold, per league</span><span class="o"><a href="#leagues">Leagues and rank</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Slippage target and borrow cap coefficient</span><span class="o"><a href="#leagues">Leagues and rank</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Base rate, kink, slope 1, slope 2, per league</span><span class="o"><a href="#rates">Interest rates</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Whether the liquidation bonus stays fixed or becomes an auction</span><span class="o"><a href="#liquidations">Liquidations</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Close factor, and the health factor it switches at</span><span class="o"><a href="#liquidators">Liquidator guide</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Maximum junior-to-senior ratio</span><span class="o"><a href="#tranches">Senior and junior</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Subordination discount, the junior rate split</span><span class="o"><a href="#tranches">Senior and junior</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Junior withdrawal cooldown</span><span class="o"><a href="#tranches">Senior and junior</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Multisig signers and threshold</span><span class="o"><a href="#governance">Governance</a></span><span class="w">Core team</span></div>
-        <div><span class="p">Timelock duration, per parameter class</span><span class="o"><a href="#governance">Governance</a></span><span class="w">Core team</span></div>
-        <div><span class="p">League demotion notice period</span><span class="o"><a href="#governance">Governance</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Guardian address</span><span class="o"><a href="#emergency">Emergency procedures</a></span><span class="w">Core team</span></div>
-        <div><span class="p">Delisting notice period</span><span class="o"><a href="#delisting">Delisting and wind-down</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Legal entity and governing jurisdiction</span><span class="o"><a href="#legal">Legal</a></span><span class="w">Counsel</span></div>
-        <div><span class="p">Restricted jurisdiction list</span><span class="o"><a href="#legal">Legal</a></span><span class="w">Counsel</span></div>
-      </div>
 
       <div class="cards c3 foot">
         <a class="card" href="#governance"><span class="ct">Governance and parameters</span><span class="cd">Who signs these numbers off, and how long it takes.</span></a>
@@ -2390,8 +2350,7 @@
           <p>
             Everything on this page that is an equation is the intended design. Every
             value that goes into it &#8212; base rate, kink, slope 1, slope 2 &#8212; is
-            <span class="badge badge-open">TBD</span> and appears in the register on
-            <a href="#roadmap">Roadmap and status</a>. The one exception is the reserve
+            <span class="badge badge-open">TBD</span>. The one exception is the reserve
             factor, which is set at <strong>20%</strong>. Where any other number appears
             below it is there to show the arithmetic working, not to state a parameter.
           </p>
@@ -4695,7 +4654,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
 
       <div class="cards c3 foot">
         <a class="card" href="#emergency"><span class="ct">Emergency procedures</span><span class="cd">The pause rule and the guardian's limits.</span></a>
-        <a class="card" href="#roadmap"><span class="ct">Roadmap and status</span><span class="cd">Every parameter still waiting on a number.</span></a>
+        <a class="card" href="#roadmap"><span class="ct">Roadmap and status</span><span class="cd">Where the project is, and what comes next.</span></a>
         <a class="card" href="#risks"><span class="ct">Risks</span><span class="cd">What the timelock does and does not protect you from.</span></a>
       </div>
     </article>
