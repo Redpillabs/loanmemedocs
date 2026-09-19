@@ -541,6 +541,9 @@
   }
   .page { display: none; }
   .page.on { display: block; animation: pagein .32s cubic-bezier(.22,.7,.28,1) both; }
+  /* A page with data-hidden stays in the source but is left off the site, print included.
+     The script also hides every nav item, card and [data-needs] text that points at it. */
+  .page[data-hidden], .is-off { display: none !important; }
   @keyframes pagein {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: none; }
@@ -1915,9 +1918,7 @@
         <div><span class="p">Max LTV and liquidation threshold, per league</span><span class="o"><a href="#leagues">Leagues and rank</a></span><span class="w">Risk</span></div>
         <div><span class="p">Slippage target and borrow cap coefficient</span><span class="o"><a href="#leagues">Leagues and rank</a></span><span class="w">Risk</span></div>
         <div><span class="p">Base rate, kink, slope 1, slope 2, per league</span><span class="o"><a href="#rates">Interest rates</a></span><span class="w">Risk</span></div>
-        <div><span class="p">Reserve factor, per league</span><span class="o"><a href="#rates">Interest rates</a></span><span class="w">Treasury</span></div>
-        <div><span class="p">Protocol share of the liquidation bonus</span><span class="o"><a href="#fees">Fees</a></span><span class="w">Treasury</span></div>
-        <div><span class="p">Liquidation bonus, and whether it stays fixed</span><span class="o"><a href="#liquidations">Liquidations</a></span><span class="w">Risk</span></div>
+        <div><span class="p">Whether the liquidation bonus stays fixed or becomes an auction</span><span class="o"><a href="#liquidations">Liquidations</a></span><span class="w">Risk</span></div>
         <div><span class="p">Close factor, and the health factor it switches at</span><span class="o"><a href="#liquidators">Liquidator guide</a></span><span class="w">Risk</span></div>
         <div><span class="p">Maximum junior-to-senior ratio</span><span class="o"><a href="#tranches">Senior and junior</a></span><span class="w">Risk</span></div>
         <div><span class="p">Subordination discount, the junior rate split</span><span class="o"><a href="#tranches">Senior and junior</a></span><span class="w">Risk</span></div>
@@ -1975,10 +1976,10 @@
         </li>
         <li>
           <div class="sc-head"><span class="sc-num">02</span><span class="sc-title">Borrow</span><span class="sc-flow">stables out</span></div>
-          <p>The book values your meme at its TWAP: the average price in its main pool over a time window, not the last trade. You can borrow up to a set share of that value, the max LTV of the ticker's league. Borrow less and the meme has room to drop.</p>
+          <p>The book values your meme at its TWAP: the average price in its main pool over a time window, not the last trade. You can borrow up to a set share of that value, the max LTV of the ticker's league. Borrow less and the meme has room to drop. A 2.5% origination fee comes off what you receive: borrow $10,000 and you get $9,750, and owe $10,000.</p>
           <div class="sc-facts">
             <div><span class="k">Your limit</span><span class="v">Meme value × league max LTV</span></div>
-            <div><span class="k">You get</span><span class="v">USDG or the chain stable</span></div>
+            <div><span class="k">You get</span><span class="v">USDG or the chain stable, less 2.5%</span></div>
           </div>
         </li>
         <li>
@@ -1991,9 +1992,9 @@
         </li>
         <li>
           <div class="sc-head"><span class="sc-num">04</span><span class="sc-title">Repay</span><span class="sc-flow">meme back</span></div>
-          <p>Pay back the stables plus interest and the meme unlocks.</p>
+          <p>Pay back the stables plus interest, plus a 2.5% repayment fee on what you repay, and the meme unlocks.</p>
           <div class="sc-facts">
-            <div><span class="k">You send</span><span class="v">Stables + interest</span></div>
+            <div><span class="k">You send</span><span class="v">Stables + interest + 2.5%</span></div>
             <div><span class="k">You get</span><span class="v">The meme back</span></div>
           </div>
         </li>
@@ -2173,8 +2174,8 @@
           <span class="htitle">You can lose the deposited meme</span>
           <p>
             If the price falls far enough, or interest piles up, anyone can liquidate you.
-            They repay part of your debt and take that much of your meme, plus a 10 to 15%
-            bonus <span class="badge badge-open">TBD</span>. You keep the stables you
+            They repay part of your debt and take that much of your meme, plus a 12%
+            bonus (10 to 15% depending on the book). You keep the stables you
             borrowed. The meme they took does not come back, even if the price recovers an
             hour later. There is no warning, no grace period and no appeal.
           </p>
@@ -2388,9 +2389,10 @@
           <span class="htitle">The formula is settled. The numbers are not.</span>
           <p>
             Everything on this page that is an equation is the intended design. Every
-            value that goes into it &#8212; base rate, kink, slope 1, slope 2, reserve
-            factor &#8212; is <span class="badge badge-open">TBD</span> and appears in the
-            register on <a href="#roadmap">Roadmap and status</a>. Where a number appears
+            value that goes into it &#8212; base rate, kink, slope 1, slope 2 &#8212; is
+            <span class="badge badge-open">TBD</span> and appears in the register on
+            <a href="#roadmap">Roadmap and status</a>. The one exception is the reserve
+            factor, which is set at <strong>20%</strong>. Where any other number appears
             below it is there to show the arithmetic working, not to state a parameter.
           </p>
         </div>
@@ -2476,10 +2478,10 @@
         <span class="fn">The <code>&#215; U</code> is why an idle book pays almost nothing: only the borrowed part earns, but the yield is shared across every deposit. See <a href="#lenders">Lenders</a>.</span>
       </div>
       <p>
-        The arithmetic, with arbitrary inputs purely to show how the three terms combine:
-        a book at U = 0.70, a borrow rate of 12% and a reserve factor of 15% would pay
-        lenders 12% &#215; 0.70 &#215; 0.85 = 7.14%, and route 1.26% of the book to the
-        protocol. None of those three inputs is a decided value.
+        The arithmetic, with the 20% reserve factor and arbitrary inputs for the other two
+        terms: a book at U = 0.70 and a borrow rate of 12% would pay lenders
+        12% &#215; 0.70 &#215; 0.80 = 6.72%, and route 1.68% of the book to the protocol.
+        The utilisation and the borrow rate are not decided values.
       </p>
 
       <h2 id="h-accrual">How interest is added</h2>
@@ -2522,9 +2524,9 @@
 
       <h2 id="h-defaults">Per-league defaults</h2>
       <p>
-        Four numbers per league, plus the reserve factor. None of them has been set. The
-        table below is the shape the sign-off has to fill in, and it is published empty
-        rather than filled with a guess.
+        Four numbers per league, none of them set yet, plus the reserve factor, which is
+        20% in every league. The table below is the shape the sign-off has to fill in, and
+        the rate columns are published empty rather than filled with a guess.
       </p>
       <div class="scroll-x">
         <table>
@@ -2534,19 +2536,19 @@
               <td class="k">T1</td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
-              <td>base + slope 1 + slope 2</td><td><span class="badge badge-open">TBD</span></td>
+              <td>base + slope 1 + slope 2</td><td><strong>20%</strong></td>
             </tr>
             <tr>
               <td class="k">T2</td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
-              <td>base + slope 1 + slope 2</td><td><span class="badge badge-open">TBD</span></td>
+              <td>base + slope 1 + slope 2</td><td><strong>20%</strong></td>
             </tr>
             <tr>
               <td class="k">T3</td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
               <td><span class="badge badge-open">TBD</span></td><td><span class="badge badge-open">TBD</span></td>
-              <td>base + slope 1 + slope 2</td><td><span class="badge badge-open">TBD</span></td>
+              <td>base + slope 1 + slope 2</td><td><strong>20%</strong></td>
             </tr>
           </tbody>
         </table>
@@ -2564,8 +2566,8 @@
             Interest is added to your debt, so your health factor falls even when the meme
             has not moved. How long a loan survives on a flat chart is set entirely by the
             rate and the gap between max LTV and the liquidation threshold, which is why
-            those numbers are the ones worth arguing about. See
-            <a href="#examples">Worked examples</a>.
+            those numbers are the ones worth arguing about.
+            <span data-needs="examples">See <a href="#examples">Worked examples</a>.</span>
           </p>
         </div>
       </div>
@@ -2587,115 +2589,60 @@
 
       <h2 id="h-feetable">The whole list</h2>
       <p>
-        <span class="badge badge-open">TBD</span> marks a number that is not signed off.
         Nothing charges a fee that is not on this table. If you find a charge that is not
         listed here, it is a bug and we want to hear about it.
       </p>
       <div class="scroll-x">
         <table>
-          <thead><tr><th>Fee</th><th>Rate</th><th>Who pays</th><th>Who receives</th><th>Where it routes</th></tr></thead>
+          <thead><tr><th>Fee</th><th>Rate</th></tr></thead>
           <tbody>
-            <tr>
-              <td class="k">Reserve factor</td>
-              <td>A share of interest, per league <span class="badge badge-open">TBD</span></td>
-              <td>Borrowers, out of interest already accrued</td>
-              <td>The book's reserve, then the protocol</td>
-              <td>Reserve first, surplus to <a href="#token">buyback</a></td>
-            </tr>
-            <tr>
-              <td class="k">Liquidation protocol share</td>
-              <td>Share of the bonus <span class="badge badge-open">TBD</span></td>
-              <td>Comes out of the liquidator's bonus, not out of extra collateral</td>
-              <td>The book's reserve</td>
-              <td>Reserve, then buyback</td>
-            </tr>
-            <tr>
-              <td class="k">Listing fee</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>There is no paid listing, at any price. See <a href="#leagues">Leagues</a>.</td>
-            </tr>
-            <tr>
-              <td class="k">Origination fee</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>Borrowing costs interest and nothing else</td>
-            </tr>
-            <tr>
-              <td class="k">Repayment fee</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>Repaying early is never penalised</td>
-            </tr>
-            <tr>
-              <td class="k">Deposit fee</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>Lender deposits mint shares one for one at the current rate</td>
-            </tr>
-            <tr>
-              <td class="k">Withdrawal fee</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>Utilisation can delay a withdrawal. Nothing charges for one.</td>
-            </tr>
-            <tr>
-              <td class="k">Performance fee on lender yield</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>The reserve factor is the only cut taken from interest</td>
-            </tr>
-            <tr>
-              <td class="k">Flash loan fee</td>
-              <td><strong>n/a</strong></td>
-              <td>&#8212;</td>
-              <td>&#8212;</td>
-              <td>The protocol does not offer flash loans. Liquidators may bring their own from elsewhere.</td>
-            </tr>
-            <tr>
-              <td class="k">Token transfer tax</td>
-              <td><strong>0</strong></td>
-              <td>Nobody</td>
-              <td>Nobody</td>
-              <td>$LOAN has no transfer tax, and no meme with one can be listed as collateral</td>
-            </tr>
+            <tr><td class="k">Deposit fee</td><td><strong>2.5%</strong></td></tr>
+            <tr><td class="k">Withdrawal fee</td><td><strong>2.5%</strong></td></tr>
+            <tr><td class="k">Origination fee</td><td><strong>2.5%</strong></td></tr>
+            <tr><td class="k">Repayment fee</td><td><strong>2.5%</strong></td></tr>
+            <tr><td class="k">Reserve factor</td><td><strong>20%</strong></td></tr>
+            <tr><td class="k">Liquidation bonus</td><td><strong>12%</strong> of repaid debt (10&#8211;15% by book)</td></tr>
+            <tr><td class="k">Liquidation protocol share</td><td><strong>10% of that bonus</strong></td></tr>
+            <tr><td class="k">Listing fee</td><td><strong>0</strong></td></tr>
+            <tr><td class="k">Performance fee on lender yield</td><td><strong>0</strong></td></tr>
           </tbody>
         </table>
       </div>
 
       <h2 id="h-feeflow">Where the money actually goes</h2>
       <p>
-        There are only two sources of protocol revenue: a slice of borrow interest, and a
-        slice of the liquidation bonus. Both land in the book they came from, and both
-        serve that book's reserve before anything leaves.
+        There are three sources of protocol revenue: the 2.5% fee on every deposit,
+        withdrawal, borrow and repayment; the 20% reserve factor on borrow interest; and
+        10% of the liquidation bonus. All three land in the book they came from, and all
+        three serve that book's reserve before anything leaves.
       </p>
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="flow" viewBox="0 0 700 250" role="img" aria-label="Fee routing: borrow interest and the liquidation bonus slice both flow into the book's reserve; only the surplus above the reserve target leaves for the buyback contract.">
+          <svg class="flow" viewBox="0 0 700 250" role="img" aria-label="Fee routing: the 2.5% fees on deposits, withdrawals, borrows and repayments, the 20% reserve factor on borrow interest and the 10% protocol share of the liquidation bonus all flow into the book's reserve; only the surplus above the reserve target leaves for the buyback contract.">
             <defs>
               <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                 <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
               </marker>
             </defs>
             <g>
-              <rect class="box" x="10" y="26" width="164" height="58"/>
-              <text class="bt" x="92" y="50" text-anchor="middle">Borrow interest</text>
-              <text class="bs" x="92" y="68" text-anchor="middle">reserve factor slice</text>
+              <rect class="box" x="4" y="10" width="188" height="58"/>
+              <text class="bt" x="98" y="34" text-anchor="middle">2.5% fees</text>
+              <text class="bs" x="98" y="52" text-anchor="middle">deposit, withdraw, borrow, repay</text>
             </g>
             <g>
-              <rect class="box" x="10" y="150" width="164" height="58"/>
-              <text class="bt" x="92" y="174" text-anchor="middle">Liquidation bonus</text>
-              <text class="bs" x="92" y="192" text-anchor="middle">protocol share</text>
+              <rect class="box" x="4" y="90" width="188" height="58"/>
+              <text class="bt" x="98" y="114" text-anchor="middle">Borrow interest</text>
+              <text class="bs" x="98" y="132" text-anchor="middle">20% reserve factor</text>
             </g>
-            <path class="arrow" marker-end="url(#fa)" d="M174 55 H 220 Q 232 55 232 75 V 108"/>
-            <path class="arrow" marker-end="url(#fa)" d="M174 179 H 220 Q 232 179 232 159 V 130"/>
+            <g>
+              <rect class="box" x="4" y="170" width="188" height="58"/>
+              <text class="bt" x="98" y="194" text-anchor="middle">Liquidation bonus</text>
+              <text class="bs" x="98" y="212" text-anchor="middle">10% protocol share</text>
+            </g>
+            <path class="arrow" marker-end="url(#fa)" d="M192 39 H 206 Q 218 39 218 51 V 98 Q 218 104 224 104 H 240"/>
+            <path class="arrow" marker-end="url(#fa)" d="M192 119 H 240"/>
+            <path class="arrow" marker-end="url(#fa)" d="M192 199 H 206 Q 218 199 218 187 V 140 Q 218 134 224 134 H 240"/>
             <g>
               <rect class="box box-a" x="248" y="88" width="170" height="62"/>
               <text class="bt" x="333" y="113" text-anchor="middle">The book's reserve</text>
@@ -2734,9 +2681,9 @@
       <div class="hint hint-info">        <div class="body">
           <span class="htitle">Fees cannot be changed quietly</span>
           <p>
-            The reserve factor and the liquidation protocol share are both timelocked
-            parameters, enforced by the audited contract. A change is announced before it
-            takes effect, and every change is logged on
+            Every fee on this page is a timelocked parameter, enforced by the audited
+            contract. A change is announced before it takes effect, and every change is
+            logged on
             <a href="#governance">Governance and parameters</a>.
           </p>
         </div>
@@ -2750,7 +2697,8 @@
     </article>
 
     <!-- ═══════════════════ WORKED EXAMPLES ═══════════════════ -->
-    <article class="page" id="page-examples" data-title="Worked examples" data-group="How it works">
+    <!-- Hidden: delete data-hidden below to bring this page, and every link to it, back. -->
+    <article class="page" id="page-examples" data-hidden data-title="Worked examples" data-group="How it works">
       <h1>Worked examples</h1>
       <p class="lede">
         Three positions, carried through with every number shown: one that ends well, one
@@ -2762,10 +2710,13 @@
           <p>
             MEME_A, MEME_B and MEME_C are stand-ins. No ticker is listed, no book exists,
             and every parameter used below &#8212; the LTVs, the thresholds, the rates, the
-            bonus, the close factor &#8212; is
+            close factor &#8212; is
             <span class="badge badge-open">TBD</span>, picked here only so the arithmetic
-            has something to run on. The method is what is fixed, not the values. Change
-            any input and every figure downstream moves.
+            has something to run on. The fees are the real ones from
+            <a href="#fees">Fees</a>: 2.5% to borrow and 2.5% to repay, the 20% reserve
+            factor, and the 12% bonus with 10% of it to the reserve. The method is what is
+            fixed, not the values. Change any input and every figure downstream
+            moves.
           </p>
         </div>
       </div>
@@ -2773,7 +2724,7 @@
       <h2 id="h-ex1">1. A healthy loan, open to repaid</h2>
       <p>
         <strong>MEME_A</strong>, a T1 book: max LTV 60%, liquidation threshold 65%, borrow
-        rate 6.30% APR at the book's current utilisation, reserve factor 10%.
+        rate 6.30% APR at the book's current utilisation, reserve factor 20%.
       </p>
 
       <div class="scroll-x">
@@ -2796,6 +2747,11 @@
               <td><strong>$100,000</strong> USDG, an LTV of 41.7%</td>
             </tr>
             <tr>
+              <td class="k">Origination fee</td>
+              <td>2.5% of the borrow, taken from what you receive</td>
+              <td>You receive <strong>$97,500</strong> and owe <strong>$100,000</strong></td>
+            </tr>
+            <tr>
               <td class="k">Health factor</td>
               <td>Threshold is 65%, not the 60% borrow limit</td>
               <td>(240,000 &#215; 0.65) / 100,000 = <strong>1.56</strong></td>
@@ -2807,8 +2763,8 @@
             </tr>
             <tr>
               <td class="k">Interest split</td>
-              <td>$1,565.55 of interest, 10% of it to the reserve</td>
-              <td>Lenders <strong>$1,409.00</strong>, reserve <strong>$156.55</strong></td>
+              <td>$1,565.55 of interest, 20% of it to the reserve</td>
+              <td>Lenders <strong>$1,252.44</strong>, reserve <strong>$313.11</strong></td>
             </tr>
             <tr>
               <td class="k">Price drifts down</td>
@@ -2822,15 +2778,17 @@
             </tr>
             <tr>
               <td class="k">Repay</td>
-              <td>You pay the debt in full and the book unlocks the meme</td>
-              <td>Pay <strong>$101,565.55</strong>, get <strong>100,000 MEME_A</strong> back</td>
+              <td>You pay the debt in full, plus the 2.5% repayment fee, and the book unlocks the meme</td>
+              <td>$101,565.55 + $2,539.14 = <strong>$104,104.69</strong>, get <strong>100,000 MEME_A</strong> back</td>
             </tr>
           </tbody>
         </table>
       </div>
       <p>
-        The loan cost <strong>$1,565.55</strong>, which is 1.57% of the principal over 90
-        days, or 6.50% APY. The meme fell 12.5% while the loan was open and nothing
+        The loan cost <strong>$6,604.69</strong>: $1,565.55 of interest, which is 1.57% of
+        the principal over 90 days or 6.50% APY, plus $5,039.14 in origination and
+        repayment fees. Each fee is charged once, however long the loan stays open, so on a
+        90-day loan the fees are most of the cost. The meme fell 12.5% while the loan was open and nothing
         happened, because the position was opened at 41.7% LTV rather than at the 60%
         ceiling. That gap is the entire reason this example ends with the meme coming back.
       </p>
@@ -2839,7 +2797,7 @@
       <p>
         <strong>MEME_B</strong>, a T2 book: max LTV 50%, liquidation threshold 58%, borrow
         rate 15% APR, liquidation bonus 12%, close factor 50%, protocol share of the bonus
-        20%. Same borrower behaviour as above, but closer to the limit and on a thinner
+        10%. Same borrower behaviour as above, but closer to the limit and on a thinner
         book.
       </p>
 
@@ -2849,7 +2807,7 @@
           <tbody>
             <tr>
               <td class="k">Open</td>
-              <td>5,000,000 MEME_B at a TWAP of $0.0200, borrow $48,000</td>
+              <td>5,000,000 MEME_B at a TWAP of $0.0200, borrow $48,000, receive $46,800 after the 2.5% fee</td>
               <td>Collateral <strong>$100,000</strong>, LTV 48%</td>
             </tr>
             <tr>
@@ -2874,7 +2832,7 @@
             </tr>
             <tr>
               <td class="k">Repay</td>
-              <td>A liquidator repays the close factor, half the debt</td>
+              <td>A liquidator repays the close factor, half the debt. The repayment fee does not apply to a liquidation.</td>
               <td>R = <strong>$24,599.14</strong></td>
             </tr>
             <tr>
@@ -2885,7 +2843,7 @@
             <tr>
               <td class="k">Bonus split</td>
               <td>The $2,951.90 bonus is split, and it comes out of the seizure, not out of extra collateral</td>
-              <td>Liquidator <strong>$2,361.52</strong>, reserve <strong>$590.38</strong></td>
+              <td>Liquidator <strong>$2,656.71</strong>, reserve <strong>$295.19</strong></td>
             </tr>
             <tr>
               <td class="k">Recheck</td>
@@ -2898,9 +2856,9 @@
 
       <h3>What it cost each side</h3>
       <div class="stats s3">
-        <div class="stat"><span class="sl">Borrower</span><span class="sv">&#8722;$2,951.90</span><span class="sn">184,494 MEME_B taken over and above the debt cleared. They keep the $48,000 borrowed and still owe $24,599.14.</span></div>
-        <div class="stat"><span class="sl">Liquidator</span><span class="sv">+$1,451.35</span><span class="sn">After selling the seized meme at 5% slippage and paying 0.5% in gas and flashloan cost.</span></div>
-        <div class="stat"><span class="sl">Lenders</span><span class="sv">&#177;$0</span><span class="sn">$24,599.14 of stables came back into the book. Nothing was lost. The reserve gained $590.38.</span></div>
+        <div class="stat"><span class="sl">Borrower</span><span class="sv">&#8722;$2,951.90</span><span class="sn">184,494 MEME_B taken over and above the debt cleared. They keep the $46,800 they received at open and still owe $24,599.14.</span></div>
+        <div class="stat"><span class="sl">Liquidator</span><span class="sv">+$1,170.92</span><span class="sn">After handing 10% of the bonus to the reserve, selling the rest of the seized meme at 5% slippage and paying 0.5% in gas and flashloan cost.</span></div>
+        <div class="stat"><span class="sl">Lenders</span><span class="sv">&#177;$0</span><span class="sn">$24,599.14 of stables came back into the book. Nothing was lost. The reserve gained $295.19.</span></div>
       </div>
       <p>
         The liquidation worked because 12% sits inside both bounds at this threshold: the
@@ -2921,7 +2879,7 @@
           <tbody>
             <tr>
               <td class="k">Open</td>
-              <td>20,000,000 MEME_C at a TWAP of $0.0050, borrow $29,000</td>
+              <td>20,000,000 MEME_C at a TWAP of $0.0050, borrow $29,000, receive $28,275 after the 2.5% fee</td>
               <td>Collateral <strong>$100,000</strong>, HF <strong>1.31</strong></td>
             </tr>
             <tr>
@@ -3023,15 +2981,16 @@
 
       <h1>Lenders</h1>
       <p class="lede">
-        You put stables in. Borrowers put memes in and pay you interest. You can lose
-        money, junior most of all, and this page says how.
+        You put stables in. Borrowers put memes in and pay you interest. This page says
+        how it works.
       </p>
 
       <h2 id="h-where">Where your USDG goes</h2>
       <p>
         You deposit the loan asset: USDG or the chain stable, depending on the
         deployment. It sits in a book and is lent to borrowers who have locked that book's
-        meme against it. Your return is the interest they pay, minus the protocol's share.
+        meme against it. Your return is the interest they pay, minus the protocol's 20%
+        share. Depositing and withdrawing each cost 2.5%. See <a href="#fees">Fees</a>.
       </p>
       <p>
         You are only exposed to the books you lend into. A book you are not in cannot cost
@@ -3422,7 +3381,8 @@
           <thead><tr><th>&nbsp;</th><th>Senior</th><th>Junior</th></tr></thead>
           <tbody>
             <tr><td class="tag">Deposit</td><td>Any time, unless the book is at the subordination cap</td><td>Any time</td></tr>
-            <tr><td class="tag">Deposit fee</td><td>0</td><td>0</td></tr>
+            <tr><td class="tag">Deposit fee</td><td>2.5%</td><td>2.5%</td></tr>
+            <tr><td class="tag">Withdrawal fee</td><td>2.5%</td><td>2.5%</td></tr>
             <tr><td class="tag">Withdraw, liquidity</td><td>Limited to the book's free stables</td><td>Limited to the book's free stables</td></tr>
             <tr><td class="tag">Withdraw, cap</td><td>Not gated by the ratio</td><td class="is-us">Blocked if it would push the book past R<sub>max</sub></td></tr>
             <tr><td class="tag">Cooldown</td><td>None</td><td>Length <span class="badge badge-open">TBD</span>. It exists so junior cannot exit into a gap the moment a price starts moving.</td></tr>
@@ -3558,11 +3518,6 @@
               <td>The full senior balance in that book</td>
               <td>Senior share price falls. Only reachable once junior is at zero.</td>
             </tr>
-            <tr>
-              <td class="k">&#8212;</td><td class="k">Anything else</td>
-              <td><strong>None</strong></td>
-              <td>There is no fourth layer. No protocol-wide fund, no treasury guarantee, no other book. If the loss is bigger than the book, the book is insolvent and is wound down.</td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -3596,8 +3551,8 @@
 
       <h2 id="h-worked">Worked, end to end</h2>
       <p>
-        The full arithmetic is example 3 on <a href="#examples">Worked examples</a>. Every
-        figure below is illustrative: the parameters it uses are not signed off.
+        <span data-needs="examples">The full arithmetic is example 3 on <a href="#examples">Worked examples</a>.</span>
+        Every figure below is illustrative: the parameters it uses are not signed off.
       </p>
       <div class="scroll-x">
         <table>
@@ -3901,7 +3856,7 @@
           <p>In return, the liquidator takes your meme: the value they repaid, plus the bonus. That meme does not come back to you.</p>
           <div class="sc-facts">
             <div><span class="k">They take</span><span class="v">Repaid value + bonus</span></div>
-            <div><span class="k">Bonus</span><span class="v">10 to 15% <span class="badge badge-open">TBD</span>, see <a href="#liquidations">the bounds</a></span></div>
+            <div><span class="k">Bonus</span><span class="v">12%, 10 to 15% by book, see <a href="#liquidations">the bounds</a></span></div>
           </div>
         </li>
         <li>
@@ -3916,8 +3871,8 @@
 
       <h2 id="h-bounds">The bonus, and the two bounds it sits between</h2>
       <p>
-        The bonus is a fixed 10 to 15% <span class="badge badge-open">TBD</span>. That is
-        one number, and the thing it has to satisfy is not one condition but two, only one
+        The bonus is a fixed 12% of the repaid debt, set between 10 and 15% per book. That
+        is one number, and the thing it has to satisfy is not one condition but two, only one
         of which holds still. It is worth showing the arithmetic rather than asserting that
         the number is fine.
       </p>
@@ -4028,14 +3983,14 @@
 
       <h3>What the chart says</h3>
       <ul class="plain">
-        <li><strong>A fixed 10% stops attracting liquidators</strong> once exit slippage passes about 8.6%. A fixed 15% holds to about 12.6%.</li>
+        <li><strong>A fixed 10% stops attracting liquidators</strong> once exit slippage passes about 8.6%. The 12% default holds to about 10.3%, and a fixed 15% to about 12.6%.</li>
         <li><strong>Above roughly 14.5% slippage no bonus satisfies both bounds</strong> at a 0.85 threshold. The floor has risen above the ceiling and the window has closed. The only remaining exits are a smaller close factor, splitting the liquidation across several blocks, or <a href="#baddebt">bad debt</a>.</li>
         <li><strong>A constant sits correctly between a moving floor and a fixed ceiling at exactly one depth.</strong> Everywhere else it is either paying more than it needs to, or not enough to get the job done.</li>
       </ul>
       <p>
-        This is the argument for the current design being a parameter worth revisiting
-        rather than a settled choice, and it is why the number is still
-        <span class="badge badge-open">TBD</span> here rather than quietly shipped.
+        The bonus is set at 12% of the repaid debt, with a range of 10 to 15% by book.
+        This chart is the reason it stays a parameter worth revisiting rather than a
+        settled choice.
       </p>
 
       <h2 id="h-auction">Fixed bonus, or reverse auction</h2>
@@ -4046,7 +4001,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="flow" viewBox="0 0 720 240" role="img" aria-label="Two paths from a health factor dropping below 1. Under a fixed bonus the bonus is 10 to 15 percent from the first block, the fastest bot wins the ordering race, and the borrower pays the full bonus every time. Under a reverse auction the bonus starts at zero and rises each block, the first bot whose profit turns positive fills, and the borrower pays only the clearing bonus.">
+          <svg class="flow" viewBox="0 0 720 240" role="img" aria-label="Two paths from a health factor dropping below 1. Under a fixed bonus the bonus is 12 percent, 10 to 15 by book, from the first block, the fastest bot wins the ordering race, and the borrower pays the full bonus every time. Under a reverse auction the bonus starts at zero and rises each block, the first bot whose profit turns positive fills, and the borrower pays only the clearing bonus.">
             <defs>
               <marker id="la" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                 <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
@@ -4064,7 +4019,7 @@
             <text class="el" x="182" y="204">Reverse auction</text>
 
             <rect class="box" x="238" y="26" width="140" height="60"/>
-            <text class="bt" x="308" y="50" text-anchor="middle">10 to 15%</text>
+            <text class="bt" x="308" y="50" text-anchor="middle">12%</text>
             <text class="bs" x="308" y="68" text-anchor="middle">from the first block</text>
             <path class="arrow" marker-end="url(#la)" d="M378 56 H 408"/>
             <rect class="box" x="416" y="26" width="140" height="60"/>
@@ -4100,7 +4055,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="chart" viewBox="0 0 640 286" role="img" aria-label="Line chart. Under a reverse auction the bonus ramps from zero to 20 percent over five minutes and clears at 5.79 percent after about 87 seconds at 5 percent exit slippage. A fixed 15 percent bonus is paid in full from the first block.">
+          <svg class="chart" viewBox="0 0 640 286" role="img" aria-label="Line chart. Under a reverse auction the bonus ramps from zero to 20 percent over five minutes and clears at 5.79 percent after about 87 seconds at 5 percent exit slippage. The fixed 12 percent bonus is paid in full from the first block.">
             <g class="gridline">
               <line x1="66" y1="26"    x2="600" y2="26"/>
               <line x1="66" y1="68.4"  x2="600" y2="68.4"/>
@@ -4120,8 +4075,8 @@
               <text x="600" y="256">300 s</text>
             </g>
 
-            <line class="refline" x1="66" y1="110.8" x2="600" y2="110.8"/>
-            <text class="reflbl" x="594" y="106" text-anchor="end">Fixed bonus, paid from block one &#8212; 15%</text>
+            <line class="refline" x1="66" y1="136.2" x2="600" y2="136.2"/>
+            <text class="reflbl" x="594" y="149" text-anchor="end">Fixed bonus, paid from block one &#8212; 12%</text>
             <line class="refline" x1="66" y1="188.9" x2="600" y2="188.9"/>
             <text class="reflbl" x="594" y="184" text-anchor="end">Clearing bonus at 5% slippage &#8212; 5.79%</text>
             <line class="refline" x1="220.6" y1="26" x2="220.6" y2="238"/>
@@ -4132,13 +4087,13 @@
             <text class="axlbl" x="333" y="278" text-anchor="middle">Seconds since liquidatable</text>
           </svg>
         </div>
-        <figcaption><b>Fig. L3</b> An illustrative ramp, 0 to 20% over five minutes, against a fixed 15%, at 5% exit slippage. The gap between the two lines at the clearing point is the value the fixed model hands over.</figcaption>
+        <figcaption><b>Fig. L3</b> An illustrative ramp, 0 to 20% over five minutes, against the fixed 12%, at 5% exit slippage. The gap between the two lines at the clearing point is the value the fixed model hands over.</figcaption>
       </figure>
 
       <div class="stats s3">
-        <div class="stat"><span class="sl">Fixed 15% pays</span><span class="sv">$1,500</span><span class="sn">On a $10,000 liquidation, from the first block, regardless of depth.</span></div>
+        <div class="stat"><span class="sl">Fixed 12% pays</span><span class="sv">$1,200</span><span class="sn">On a $10,000 liquidation, from the first block, regardless of depth.</span></div>
         <div class="stat"><span class="sl">Auction clears at</span><span class="sv">$579</span><span class="sn">The bonus that actually makes the trade worth doing at 5% slippage.</span></div>
-        <div class="stat"><span class="sl">Difference</span><span class="sv">$921</span><span class="sn">Stays in the borrower's collateral. It is the same $921 that lands on junior when a seizure is what tips a book into bad debt.</span></div>
+        <div class="stat"><span class="sl">Difference</span><span class="sv">$621</span><span class="sn">Stays in the borrower's collateral. It is the same $621 that lands on junior when a seizure is what tips a book into bad debt.</span></div>
       </div>
 
       <p>
@@ -4155,7 +4110,7 @@
           <span class="eyebrow">If the fixed bonus stays</span>
           <ul class="plain">
             <li>The liquidation threshold per league with the ceiling check shown, as in the table above.</li>
-            <li>The slippage depth the 10 to 15% is priced for, and the pool depth that implies.</li>
+            <li>The slippage depth each book's bonus, 12% by default, is priced for, and the pool depth that implies.</li>
             <li>A worked example at the boundary, not on a comfortable position.</li>
           </ul>
         </div>
@@ -4659,7 +4614,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
             </tr>
             <tr>
               <td class="k">Standard</td>
-              <td>Interest rate curve, reserve factor, protocol share of the bonus, junior cooldown</td>
+              <td>Interest rate curve, reserve factor, protocol share of the bonus, deposit, withdrawal, origination and repayment fees, junior cooldown</td>
               <td><span class="badge badge-open">TBD</span>, shorter than slow</td>
               <td>Owner multisig</td>
             </tr>
@@ -4943,9 +4898,9 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       <ol class="stepcards">
         <li>
           <div class="sc-head"><span class="sc-num">01</span><span class="sc-title">Fees build up</span><span class="sc-flow">stables in</span></div>
-          <p>Fees collect in stables inside each book: the borrow interest slice and the liquidation bonus slice. There is no listing fee and there never will be. Every fee is on <a href="#fees">Fees</a>.</p>
+          <p>Fees collect in stables inside each book: the 2.5% fees on deposits, withdrawals, borrows and repayments, the 20% slice of borrow interest, and 10% of the liquidation bonus. There is no listing fee and there never will be. Every fee is on <a href="#fees">Fees</a>.</p>
           <div class="sc-facts">
-            <div><span class="k">From</span><span class="v">Interest and liquidations only</span></div>
+            <div><span class="k">From</span><span class="v">Fees, interest and liquidations</span></div>
             <div><span class="k">Held in</span><span class="v">Stables, per book</span></div>
           </div>
         </li>
@@ -5238,7 +5193,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
             </tr>
             <tr>
               <td class="tag">Liquidation incentive</td>
-              <td class="is-us">A fixed bonus, size <span class="badge badge-open">TBD</span>, and the fixed-versus-auction decision is still open</td>
+              <td class="is-us">A fixed 12% bonus, 10 to 15% by book, with 10% of it to the book's reserve. The fixed-versus-auction decision is still open</td>
               <td>Fixed bonus per asset, close factor, liquidation protocol fee. Dutch auction in v4.</td>
               <td>Euler: reverse Dutch auction starting at 0%</td>
             </tr>
@@ -5499,7 +5454,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
         </div>
         <div>
           <span class="t">Liquidation bonus</span>
-          <span class="d">The extra collateral a liquidator receives above the debt they repay, as payment for doing it. Currently a fixed 10 to 15% <span class="badge badge-open">TBD</span>. It is a cost to the borrower, not a protocol fee. See <a href="#liquidations">Liquidations</a>.</span>
+          <span class="d">The extra collateral a liquidator receives above the debt they repay, as payment for doing it. A fixed 12% of the repaid debt, set between 10 and 15% per book. 10% of the bonus goes to the book's reserve; the rest is the liquidator's, and is a cost to the borrower rather than a protocol fee. See <a href="#liquidations">Liquidations</a>.</span>
         </div>
         <div>
           <span class="t">Liquidation threshold</span>
@@ -5527,7 +5482,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
         </div>
         <div>
           <span class="t">Reserve factor</span>
-          <span class="d">The protocol's cut of borrow interest, taken before interest reaches lenders, and routed to that book's reserve. Value per league <span class="badge badge-open">TBD</span>. See <a href="#fees">Fees</a>.</span>
+          <span class="d">The protocol's cut of borrow interest, taken before interest reaches lenders, and routed to that book's reserve. Set at 20% in every league. See <a href="#fees">Fees</a>.</span>
         </div>
         <div>
           <span class="t">Senior</span>
@@ -5727,7 +5682,19 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
 
 <script>
 (function () {
-  var pages = [].slice.call(document.querySelectorAll('article.page'));
+  /* ── Hidden pages ────────────────────────────────────────────── */
+  /* An article with data-hidden stays in the source but gets no route, no nav entry,
+     no search hit and no prev/next. Its nav items, cards and [data-needs] text go too. */
+  [].slice.call(document.querySelectorAll('article.page[data-hidden]')).forEach(function (p) {
+    var id = p.id.replace(/^page-/, '');
+    var refs = 'a[href="#' + id + '"], a[href^="#' + id + '::"], [data-needs="' + id + '"]';
+    [].slice.call(document.querySelectorAll(refs)).forEach(function (el) {
+      var off = el.closest('[data-needs]') || el.closest('.navlist li') || el;
+      off.classList.add('is-off');
+    });
+  });
+
+  var pages = [].slice.call(document.querySelectorAll('article.page:not([data-hidden])'));
   var navLinks = [].slice.call(document.querySelectorAll('.navlist a'));
   var railList = document.getElementById('raillist');
   var pagenav = document.getElementById('pagenav');
@@ -5767,7 +5734,9 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
   var index = meta.map(function (m) {
     var heads = [].slice.call(m.el.querySelectorAll('h2, h3, summary'))
                   .map(function (h) { return h.textContent.trim(); });
-    var body = (m.el.textContent || '').replace(/\s+/g, ' ').toLowerCase();
+    var copy = m.el.cloneNode(true);
+    [].slice.call(copy.querySelectorAll('.is-off')).forEach(function (n) { n.remove(); });
+    var body = (copy.textContent || '').replace(/\s+/g, ' ').toLowerCase();
     return { m: m, heads: heads, hay: (m.title + ' ' + m.group + ' ' + heads.join(' ')).toLowerCase(), body: body };
   });
 
