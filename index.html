@@ -883,12 +883,6 @@
   .rows .k { font-family: var(--font-sans); font-size: 12.5px; color: var(--ink); }
   .rows .d { color: var(--ink-2); font-size: 14.5px; }
 
-  /* Glossary */
-  .gloss { display: flex; flex-direction: column; border-top: 1px solid var(--line); max-width: 76ch; }
-  .gloss > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
-  .gloss .t { font-family: var(--font-sans); font-weight: 600; font-size: 15px; color: var(--ink); }
-  .gloss .d { font-size: 14.4px; color: var(--ink-2); margin-top: 3px; max-width: 70ch; }
-
   /* Checklist */
   .checkgroup { display: flex; flex-direction: column; gap: 10px; max-width: 74ch; }
   .check {
@@ -946,6 +940,17 @@
     figure.fig .fig-stage, .hfn-art { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 16px 14px 14px; }
     /* drawn diagrams keep a readable width and scroll; finished images fit the screen and open full size on tap */
     figure.fig svg, .hfn-art svg { min-width: 540px; }
+  }
+  /* The health factor drawings come in two cuts: the wide one for larger screens and a
+     narrower one drawn for phones, so on a phone nothing scrolls sideways and the type
+     stays readable instead of shrinking with the drawing. */
+  figure.fig svg.hf-sm, .hfn-art svg.hf-sm { display: none; }
+  @media (max-width: 640px) {
+    figure.fig svg.hf-lg, .hfn-art svg.hf-lg { display: none; }
+    figure.fig svg.hf-sm, .hfn-art svg.hf-sm { display: block; min-width: 0; max-width: 420px; margin: 0 auto; }
+    .hf-sm .fg-note { font-size: 12px; }
+    .hf-sm .fg-key  { font-size: 14.5px; }
+    .mini.hf-sm text { font-size: 11.5px; }
   }
 
   /* Code block */
@@ -1605,8 +1610,6 @@
       <ul class="navlist">
         <li><a href="#risks">Risks</a></li>
         <li><a href="#compare">What makes us different</a></li>
-        <li><a href="#glossary">Glossary</a></li>
-        <li><a href="#legal">Legal</a></li>
       </ul>
     </div>
 
@@ -1841,7 +1844,7 @@
           <p>The book values your meme at its TWAP: the average price in its main pool over a time window, not the last trade. You can borrow up to a set share of that value, the max LTV of the ticker's league. Borrow less and the meme has room to drop. A 2.5% origination fee comes off what you receive: borrow $10,000 and you get $9,750, and owe $10,000.</p>
           <div class="sc-facts">
             <div><span class="k">Your limit</span><span class="v">Meme value × league max LTV</span></div>
-            <div><span class="k">You get</span><span class="v">USDG or the chain stable, less 2.5%</span></div>
+            <div><span class="k">You get</span><span class="v">USD or the chain stable, less 2.5%</span></div>
           </div>
         </li>
         <li>
@@ -1887,7 +1890,7 @@
       </div>
       <figure class="fig">
         <div class="fig-stage">
-          <svg viewBox="0 0 720 306" role="img" aria-labelledby="hf-gauge-title">
+          <svg class="hf-lg" viewBox="0 0 720 306" role="img" aria-labelledby="hf-gauge-title">
             <title id="hf-gauge-title">A scale of the health factor. A hard line marks 1.0: left of it the loan is liquidatable by anyone, right of it the loan is fine. A marker labelled "you" sits on the safe side. Repaying debt and adding more of the same meme push you right, away from the line. Interest accruing and the TWAP price falling push you left, toward it.</title>
             <defs>
               <marker id="hf-arrow-safe" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto">
@@ -1935,6 +1938,55 @@
             <path d="M500 300 H 330" fill="none" stroke="var(--rose)" stroke-width="2" marker-end="url(#hf-arrow-risk)"/>
             <text x="514" y="304" class="fg-note">TWAP price falls</text>
           </svg>
+          <svg class="hf-sm" viewBox="0 0 300 292" role="img" aria-labelledby="hf-gauge-title-sm">
+            <title id="hf-gauge-title-sm">A scale of the health factor. A hard line marks 1.0: left of it the loan is liquidatable by anyone, right of it the loan is fine. A marker labelled "you" sits on the safe side. Repaying debt and adding more of the same meme push you right, away from the line. Interest accruing and the TWAP price falling push you left, toward it.</title>
+            <defs>
+              <marker id="hf-arrow-safe-sm" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z" fill="var(--moss)"/>
+              </marker>
+              <marker id="hf-arrow-risk-sm" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto">
+                <path d="M0 0 L10 5 L0 10 Z" fill="var(--rose)"/>
+              </marker>
+            </defs>
+
+            <!-- the column your position sits on, broken where the scale runs -->
+            <path d="M184 24 V 84 M184 198 V 286" fill="none"
+                  stroke="var(--line-strong)" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+
+            <!-- what raises the health factor -->
+            <text x="172" y="16" text-anchor="end" class="fg-lbl" style="fill:var(--moss)">RAISES HF</text>
+            <path d="M184 40 H 284" fill="none" stroke="var(--moss)" stroke-width="2" marker-end="url(#hf-arrow-safe-sm)"/>
+            <text x="172" y="44" text-anchor="end" class="fg-note">repay debt</text>
+            <path d="M184 66 H 284" fill="none" stroke="var(--moss)" stroke-width="2" marker-end="url(#hf-arrow-safe-sm)"/>
+            <text x="172" y="70" text-anchor="end" class="fg-note">add more of the same meme</text>
+
+            <!-- the scale: one band, two zones, meeting at the line -->
+            <path d="M106 86 H16 a8 8 0 0 0-8 8 v58 a8 8 0 0 0 8 8 h90 z"
+                  fill="var(--rose-soft)" stroke="var(--rose-line)" stroke-width="1.5"/>
+            <path d="M106 86 h176 a8 8 0 0 1 8 8 v58 a8 8 0 0 1-8 8 H106 z"
+                  fill="var(--moss-soft)" stroke="var(--moss-line)" stroke-width="1.5"/>
+            <text x="18" y="110" class="fg-key" style="fill:var(--rose)">HF &lt; 1</text>
+            <text x="18" y="129" class="fg-note">anyone can</text>
+            <text x="18" y="145" class="fg-note">liquidate you</text>
+            <text x="120" y="110" class="fg-key" style="fill:var(--moss)">HF &#8805; 1</text>
+            <text x="120" y="129" class="fg-note">fine</text>
+
+            <!-- the hard line at 1.0, and where you are, read off the same edge -->
+            <path d="M106 86 V 172" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <rect x="86" y="172" width="40" height="24" rx="7" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+            <text x="106" y="188.5" text-anchor="middle" class="fg-num" style="fill:var(--ink)">1.0</text>
+
+            <path d="M184 160 V 172" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <rect x="154" y="172" width="60" height="24" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+            <text x="184" y="189" text-anchor="middle" class="fg-key" style="fill:var(--accent-ink)">you</text>
+
+            <!-- what lowers it -->
+            <text x="196" y="226" class="fg-lbl" style="fill:var(--rose)">LOWERS HF</text>
+            <path d="M184 250 H 116" fill="none" stroke="var(--rose)" stroke-width="2" marker-end="url(#hf-arrow-risk-sm)"/>
+            <text x="196" y="254" class="fg-note">interest accrues</text>
+            <path d="M184 278 H 116" fill="none" stroke="var(--rose)" stroke-width="2" marker-end="url(#hf-arrow-risk-sm)"/>
+            <text x="196" y="282" class="fg-note">TWAP price falls</text>
+          </svg>
         </div>
         <figcaption><b>Fig. 2</b> The four things that move your health factor. Two of them are yours to control; the other two happen whether you are watching or not.</figcaption>
       </figure>
@@ -1942,7 +1994,7 @@
         <ul class="hfnotes">
           <li>
             <div class="hfn-art">
-            <svg class="mini" viewBox="0 0 592 128" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
+            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
               <path class="ln-mute" d="M14 14H32"/><text x="37" y="18">last trade</text>
               <path class="ln-acc" d="M104 14H122"/><text x="127" y="18" class="tx-acc">TWAP</text>
               <path class="base" d="M14 100H578"/>
@@ -1956,12 +2008,26 @@
               <text x="202" y="92">one-block wick: not liquidated</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
+            <svg class="mini hf-sm" viewBox="0 0 300 146" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
+              <path class="ln-mute" d="M10 14H26"/><text x="31" y="18">last trade</text>
+              <path class="ln-acc" d="M100 14H116"/><text x="121" y="18" class="tx-acc">TWAP</text>
+              <path class="base" d="M10 124H290"/>
+              <path class="dash-rose" d="M10 89.9H290"/>
+              <text x="290" y="103" text-anchor="end" class="tx-rose">liquidation level</text>
+              <path class="ln-mute" d="M10 52.4 21.9 61.8 33.8 50.1 45.7 64.1 57.7 52.4 69.6 66.5 81.5 54.7 91.4 50.1 95.4 59.4 97.4 103.9 99.4 54.7 111.3 68.8 123.2 54.7 135.1 71.1 147 57.1 158.9 73.5 170.9 59.4 182.8 68.8 194.7 57.1 199.6 64.1 201.6 36 203.6 66.5 215.5 73.5 227.4 61.8 239.4 75.8 251.3 64.1 263.2 78.2 275.1 66.5 290 73.5"/>
+              <path class="ln-acc" d="M10 55.9C72.6 55.9 137.1 61.8 201.6 65.3S261.2 70 290 71.1"/>
+              <circle class="dot-rose" cx="97.4" cy="103.9" r="3.5"/>
+              <circle class="dot-acc" cx="201.6" cy="36" r="3.5"/>
+              <text x="195" y="40" text-anchor="end">one-block spike: not saved</text>
+              <text x="106" y="117">one-block wick: not liquidated</text>
+              <text x="290" y="140" text-anchor="end">time &#8594;</text>
+            </svg>
             </div>
             <p><strong>Collateral value uses the TWAP, not the last trade.</strong> A one block wick does not liquidate you, and it does not save you either.</p>
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini" viewBox="0 0 592 128" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
+            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
               <path class="ln-gold" d="M14 14H32"/><text x="37" y="18" class="tx-gold">league threshold</text>
               <path class="ln-rose" d="M170 14H188"/><text x="193" y="18" class="tx-rose">your debt</text>
               <rect class="zone" x="14" y="40" width="286" height="36"/>
@@ -1975,12 +2041,26 @@
               <text x="294" y="118" text-anchor="end">demotion takes effect</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
+            <svg class="mini hf-sm" viewBox="0 0 300 140" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
+              <path class="ln-gold" d="M10 14H26"/><text x="31" y="18" class="tx-gold">league threshold</text>
+              <path class="ln-rose" d="M140 14H156"/><text x="161" y="18" class="tx-rose">your debt</text>
+              <rect class="zone" x="10" y="47.7" width="142" height="42.2"/>
+              <rect class="zone" x="152" y="68.8" width="138" height="21.1"/>
+              <path class="ln-gold" d="M10 47.7H152V68.8H290"/>
+              <path class="ln-rose" d="M10 89.9H290"/>
+              <path class="dash-mute" d="M152 36V118"/>
+              <path class="base" d="M10 118H290"/>
+              <text x="81" y="73.5" text-anchor="middle" class="tx-moss">room</text>
+              <text x="221" y="84" text-anchor="middle" class="tx-moss">less room</text>
+              <text x="148" y="134" text-anchor="end">demotion takes effect</text>
+              <text x="290" y="134" text-anchor="end">time &#8594;</text>
+            </svg>
             </div>
             <p><strong>The liquidation threshold comes from the league.</strong> If the ticker drops a league, the tighter threshold applies to your open loan once the change takes effect. <span class="badge badge-open">Notice period TBD</span></p>
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini" viewBox="0 0 592 128" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
+            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
               <path class="ln-acc" d="M14 14H32"/><text x="37" y="18" class="tx-acc">collateral &#215; threshold</text>
               <path class="ln-rose" d="M186 14H204"/><text x="209" y="18" class="tx-rose">debt</text>
               <path class="base" d="M14 100H578"/>
@@ -1990,12 +2070,22 @@
               <text x="489" y="40" text-anchor="end" class="tx-rose">HF &lt; 1</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
+            <svg class="mini hf-sm" viewBox="0 0 300 140" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
+              <path class="ln-acc" d="M10 14H26"/><text x="31" y="18" class="tx-acc">collateral &#215; threshold</text>
+              <path class="ln-rose" d="M184 14H200"/><text x="205" y="18" class="tx-rose">debt</text>
+              <path class="base" d="M10 118H290"/>
+              <path class="ln-acc" d="M10 57.1H290"/>
+              <path class="ln-rose" d="M10 108.6C57.7 106.3 114.3 101.6 152 94.6 201.6 82.9 236.4 68.8 284 36"/>
+              <circle class="dot-rose" cx="250.8" cy="57.1" r="4"/>
+              <text x="245.8" y="47.7" text-anchor="end" class="tx-rose">HF &lt; 1</text>
+              <text x="290" y="134" text-anchor="end">time &#8594;</text>
+            </svg>
             </div>
             <p><strong>Your debt grows with interest,</strong> so a loan you never touch drifts toward liquidation even at a flat price.</p>
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini" viewBox="0 0 592 128" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
+            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
               <defs>
                 <marker id="hfn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                   <path d="M0 0 L10 5 L0 10 Z" fill="var(--moss)"/>
@@ -2010,6 +2100,22 @@
               <text x="432" y="38" class="tx-moss">add the same meme</text>
               <path class="ln-moss" d="M376 91H310" marker-end="url(#hfn-arrow)"/>
               <text x="386" y="95" class="tx-moss">repay</text>
+            </svg>
+            <svg class="mini hf-sm" viewBox="0 0 300 104" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
+              <defs>
+                <marker id="hfn-arrow-sm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0 0 L10 5 L0 10 Z" fill="var(--moss)"/>
+                </marker>
+              </defs>
+              <path class="base" d="M80 16V100"/>
+              <path class="bar-moss" d="M80 26h118a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H80z"/>
+              <path class="bar-rose" d="M80 64h66a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H80z"/>
+              <text x="70" y="43" text-anchor="end">collateral</text>
+              <text x="70" y="81" text-anchor="end">debt</text>
+              <path class="ln-moss" d="M212 39H270" marker-end="url(#hfn-arrow-sm)"/>
+              <text x="290" y="20" text-anchor="end" class="tx-moss">add the same meme</text>
+              <path class="ln-moss" d="M214 77H160" marker-end="url(#hfn-arrow-sm)"/>
+              <text x="222" y="81" class="tx-moss">repay</text>
             </svg>
             </div>
             <p><strong>You raise HF two ways:</strong> repay some debt, or add more of the same meme.</p>
@@ -2261,7 +2367,7 @@
         <div class="fbody">
         U = borrowed / (borrowed + available)
         </div>
-        <span class="fn">All in the book's loan asset. A book with 700,000 USDG lent out and 300,000 sitting free is at U = 0.70.</span>
+        <span class="fn">All in the book's loan asset. A book with 700,000 USD lent out and 300,000 sitting free is at U = 0.70.</span>
       </div>
 
       <h2 id="h-curve">The rate curve</h2>
@@ -2528,7 +2634,7 @@
         <li><strong>Gas.</strong> Paid to the chain on every deposit, borrow, repay and withdrawal.</li>
         <li><strong>Swap slippage.</strong> If you sell the borrowed stables, or buy them back to repay, the price you get is the market's, not ours.</li>
         <li><strong>The liquidator's bonus.</strong> The part that does not go to the reserve goes to whoever liquidated you. It is a cost of being liquidated, not a protocol fee, and it is set out on <a href="#liquidations">Liquidations</a>.</li>
-        <li><strong>The spread on the loan asset.</strong> Acquiring or exiting USDG has its own cost wherever you do it.</li>
+        <li><strong>The spread on the loan asset.</strong> Acquiring or exiting USD has its own cost wherever you do it.</li>
       </ul>
 
       <div class="hint hint-info">        <div class="body">
@@ -2597,7 +2703,7 @@
             <tr>
               <td class="k">Borrow</td>
               <td>You take well under the limit, on purpose</td>
-              <td><strong>$100,000</strong> USDG, an LTV of 41.7%</td>
+              <td><strong>$100,000</strong> USD, an LTV of 41.7%</td>
             </tr>
             <tr>
               <td class="k">Origination fee</td>
@@ -2838,9 +2944,9 @@
         how it works.
       </p>
 
-      <h2 id="h-where">Where your USDG goes</h2>
+      <h2 id="h-where">Where your USD goes</h2>
       <p>
-        You deposit the loan asset: USDG or the chain stable, depending on the
+        You deposit the loan asset: USD or the chain stable, depending on the
         deployment. It sits in a book and is lent to borrowers who have locked that book's
         meme against it. Your return is the interest they pay, minus the protocol's 20%
         share. Depositing and withdrawing each cost 2.5%. See <a href="#fees">Fees</a>.
@@ -2970,7 +3076,7 @@
               <span class="rr-title">The stable loses its peg</span>
               <span class="badge badge-risk">Deposit</span>
             </div>
-            <p>You hold the loan asset. If USDG or the chain stable stops being worth $1, that is your loss, and nothing in this protocol offsets it. The book still balances, in a token that is worth less.</p>
+            <p>You hold the loan asset. If USD or the chain stable stops being worth $1, that is your loss, and nothing in this protocol offsets it. The book still balances, in a token that is worth less.</p>
             <div class="sc-facts f3">
               <div><span class="k">Trigger</span><span class="v">Loan asset loses its peg</span></div>
               <div><span class="k">Hits</span><span class="v">Every lender, every book</span></div>
@@ -4299,7 +4405,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
             </tr>
             <tr>
               <td class="k">Legal or sanctions</td><td>No</td>
-              <td>The token or its issuer is subject to something that makes running the book unlawful in the jurisdictions we operate from. See <a href="#legal">Legal</a>.</td>
+              <td>The token or its issuer is subject to something that makes running the book unlawful in the jurisdictions we operate from.</td>
             </tr>
           </tbody>
         </table>
@@ -4798,7 +4904,6 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       <div class="cards c3 foot">
         <a class="card" href="#fees"><span class="ct">Fees</span><span class="cd">Where the revenue behind a buyback comes from.</span></a>
         <a class="card" href="#baddebt"><span class="ct">Bad debt</span><span class="cd">Why a book with a hole sends nothing to buybacks.</span></a>
-        <a class="card" href="#legal"><span class="ct">Legal</span><span class="cd">The token disclaimer in full.</span></a>
       </div>
     </article>
 
@@ -4985,7 +5090,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
         <li><strong>Approvals.</strong> A token approval you granted to something else can drain the meme before it ever reaches a book.</li>
         <li><strong>Key loss.</strong> There is no recovery, no support, and no admin who can move a position to a new address.</li>
         <li><strong>Borrowing to buy more of the meme you posted.</strong> When it drops you lose on the extra meme and get liquidated sooner on the loan. It is the most common way people lose everything here and it is entirely self-inflicted.</li>
-        <li><strong>Tax.</strong> A liquidation may be a taxable disposal where you live. We do not report anything to anyone and we cannot advise you. See <a href="#legal">Legal</a>.</li>
+        <li><strong>Tax.</strong> A liquidation may be a taxable disposal where you live. We do not report anything to anyone and we cannot advise you.</li>
       </ul>
 
       <h2 id="h-r-not">Risks we do not carry</h2>
@@ -5000,7 +5105,6 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       <div class="cards c3 foot">
         <a class="card" href="#baddebt"><span class="ct">Bad debt</span><span class="cd">The one that actually costs lenders money.</span></a>
         <a class="card" href="#governance"><span class="ct">Governance and parameters</span><span class="cd">What the multisig can and cannot do.</span></a>
-        <a class="card" href="#legal"><span class="ct">Legal</span><span class="cd">Terms, jurisdictions and disclaimers.</span></a>
       </div>
     </article>
 
@@ -5103,277 +5207,6 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       </div>
     </article>
 
-    <!-- ═══════════════════ GLOSSARY ═══════════════════ -->
-    <article class="page" id="page-glossary" data-title="Glossary" data-group="Reference">
-      <h1>Glossary</h1>
-      <p class="lede">
-        Every term these docs use without stopping to define it. In alphabetical order, with
-        the page that goes deeper.
-      </p>
-
-      <h2 id="h-g-af">A to F</h2>
-      <div class="gloss">
-        <div>
-          <span class="t">APR and APY</span>
-          <span class="d">APR is the rate before compounding; APY is what you actually pay or earn once per-second compounding is applied. The contracts store APR, the interface shows APY. At 12% APR the APY is 12.75%. See <a href="#rates">Interest rates</a>.</span>
-        </div>
-        <div>
-          <span class="t">Bad debt</span>
-          <span class="d">Debt with no collateral left behind it, after a liquidator has taken the last token. Distinct from an underwater position, which still has something to seize. See <a href="#baddebt">Bad debt</a>.</span>
-        </div>
-        <div>
-          <span class="t">Book</span>
-          <span class="d">One isolated market: one meme as collateral, one stable as the loan asset, its own lenders, its own borrow cap, its own reserve. The unit of isolation in this protocol. A book going bad costs only the people in it.</span>
-        </div>
-        <div>
-          <span class="t">Borrow cap</span>
-          <span class="d">The maximum total debt a book will carry, derived from the depth of its canonical pool so that liquidating the whole book should not crash the price. Hitting it pauses new borrows. See <a href="#leagues">Borrow caps and pool depth</a>.</span>
-        </div>
-        <div>
-          <span class="t">Canonical pool</span>
-          <span class="d">The one main on-chain pool for a token, named at listing, and the only price source for that book. If it dies or migrates, the book pauses rather than repointing quickly. See <a href="#oracle">Oracle specification</a>.</span>
-        </div>
-        <div>
-          <span class="t">Cardinality</span>
-          <span class="d">How many historical price observations a pool stores. Too few and it cannot serve a TWAP window as long as the book needs, so the oracle read reverts rather than quietly returning a shorter window.</span>
-        </div>
-        <div>
-          <span class="t">Close factor</span>
-          <span class="d">The most of a debt a single liquidation call may repay: a partial close near a health factor of 1, a full close well below it. Both fractions are <span class="badge badge-open">TBD</span>. See <a href="#liquidators">Liquidator guide</a>.</span>
-        </div>
-        <div>
-          <span class="t">Collateral</span>
-          <span class="d">The meme you deposit. It sits locked in that book's locker. It is not lent out, not staked, not used to farm anything, and it is what you lose if you are liquidated.</span>
-        </div>
-        <div>
-          <span class="t">Deviation breaker</span>
-          <span class="d">A rule that pauses a book when the TWAP moves further in one window than a real market move plausibly would, on the assumption that a price that jumped that far is being pushed. See <a href="#oracle">Oracle specification</a>.</span>
-        </div>
-      </div>
-
-      <h2 id="h-g-gl">G to L</h2>
-      <div class="gloss">
-        <div>
-          <span class="t">Health factor</span>
-          <span class="d">One number saying how close a loan is to liquidation: collateral value times the liquidation threshold, divided by debt. At 1 or above the loan is fine; below 1 anyone can liquidate it. See <a href="#loan">Health factor</a>.</span>
-        </div>
-        <div>
-          <span class="t">Junior</span>
-          <span class="d">The tranche that is written down first when a book takes a loss, and is paid a higher rate for it. Can be allocated to any league. Junior in one book does not stand behind senior in another. See <a href="#tranches">Senior and junior</a>.</span>
-        </div>
-        <div>
-          <span class="t">Kink</span>
-          <span class="d">The utilisation level where the rate curve changes slope. Below it the borrow rate rises gently; above it steeply, because the last stables in a book are the ones lenders need back. See <a href="#rates">The rate curve</a>.</span>
-        </div>
-        <div>
-          <span class="t">League</span>
-          <span class="d">T1, T2 or T3. A bucket set on a token's measurable on-chain properties, which decides that book's max LTV, liquidation threshold and borrow cap. A higher league means better terms, not a safer meme. See <a href="#leagues">Leagues and rank</a>.</span>
-        </div>
-        <div>
-          <span class="t">Liquidation bonus</span>
-          <span class="d">The extra collateral a liquidator receives above the debt they repay, as payment for doing it. A fixed 12% of the repaid debt, set between 10 and 15% per book. 10% of the bonus goes to the book's reserve; the rest is the liquidator's, and is a cost to the borrower rather than a protocol fee. See <a href="#liquidations">Liquidations</a>.</span>
-        </div>
-        <div>
-          <span class="t">Liquidation threshold</span>
-          <span class="d">The LTV at which a loan becomes liquidatable. Always higher than the max LTV, and the gap between the two is the borrower's entire buffer.</span>
-        </div>
-        <div>
-          <span class="t">Loan asset</span>
-          <span class="d">The stable you borrow and lenders deposit: USDG or the chain stable, depending on the deployment. Never a meme.</span>
-        </div>
-        <div>
-          <span class="t">LTV</span>
-          <span class="d">Loan to value: debt divided by collateral value. Max LTV is the most you may borrow at open; the liquidation threshold is where the loan can be taken.</span>
-        </div>
-      </div>
-
-      <h2 id="h-g-mz">M to Z</h2>
-      <div class="gloss">
-        <div>
-          <span class="t">Pause</span>
-          <span class="d">New borrows in one book stop. Repayment, withdrawal and liquidation keep working. Distinct from a freeze, which also stops new deposits, and a deprecation, which is permanent. See <a href="#emergency">Emergency procedures</a>.</span>
-        </div>
-        <div>
-          <span class="t">Reserve</span>
-          <span class="d">A per-book buffer funded from that book's own revenue, drawn automatically to absorb bad debt before lenders are touched. It is not insurance and does not survive a real event. See <a href="#baddebt">The reserve</a>.</span>
-        </div>
-        <div>
-          <span class="t">Reserve factor</span>
-          <span class="d">The protocol's cut of borrow interest, taken before interest reaches lenders, and routed to that book's reserve. Set at 20% in every league. See <a href="#fees">Fees</a>.</span>
-        </div>
-        <div>
-          <span class="t">Senior</span>
-          <span class="d">The tranche that is written down only after junior in the same book has gone to zero, and is paid less for the protection. Allocated to T1 books only. See <a href="#tranches">Senior and junior</a>.</span>
-        </div>
-        <div>
-          <span class="t">Share token</span>
-          <span class="d">What a lender holds. A claim on a proportion of a book's assets rather than a fixed number of stables, so yield arrives as the share price rising and a loss arrives as it falling. See <a href="#baddebt">What it does to your share price</a>.</span>
-        </div>
-        <div>
-          <span class="t">Slippage</span>
-          <span class="d">The gap between the quoted price and what you actually get when you sell into a pool. For a liquidator it is the cost of exiting the seized meme, and it is what decides whether a bonus is worth taking. See <a href="#liquidations">The floor</a>.</span>
-        </div>
-        <div>
-          <span class="t">Subordination</span>
-          <span class="d">The arrangement that puts one lender's claim behind another's in the loss order. Here it applies within a book only.</span>
-        </div>
-        <div>
-          <span class="t">Timelock</span>
-          <span class="d">A delay between a parameter change being proposed and taking effect, during which the queued change is public. The main thing standing between a decision and your open position. See <a href="#governance">Governance and parameters</a>.</span>
-        </div>
-        <div>
-          <span class="t">TWAP</span>
-          <span class="d">Time weighted average price: the average price in a pool over a set window rather than the last trade. Expensive to manipulate because you have to hold the price away from the market for the whole window, and it lags in a crash for the same reason. See <a href="#oracle">Why TWAP, not last tick</a>.</span>
-        </div>
-        <div>
-          <span class="t">Unrealised shortfall</span>
-          <span class="d">Debt above collateral value on positions that still have collateral to seize. Published per book, and has not touched anyone's share price yet. It can go back to zero; realised bad debt cannot.</span>
-        </div>
-        <div>
-          <span class="t">Utilisation</span>
-          <span class="d">The share of a book's stables currently out on loan. It sets the borrow rate and decides whether you can withdraw right now. At 100% there is nothing free to take out. See <a href="#lenders">Utilisation</a>.</span>
-        </div>
-        <div>
-          <span class="t">Waterfall</span>
-          <span class="d">The fixed order in which a loss is absorbed: the book's reserve, then junior, then senior, then nothing. See <a href="#baddebt">The order of absorption</a>.</span>
-        </div>
-      </div>
-
-      <div class="cards c3 foot">
-        <a class="card" href="#compare"><span class="ct">What makes us different</span><span class="cd">The same vocabulary, against Aave and Morpho.</span></a>
-        <a class="card" href="#loan"><span class="ct">How a loan works</span><span class="cd">Most of these terms, in context.</span></a>
-        <a class="card" href="#risks"><span class="ct">Risks</span><span class="cd">What each of them can cost you.</span></a>
-      </div>
-    </article>
-
-    <!-- ═══════════════════ LEGAL ═══════════════════ -->
-    <article class="page" id="page-legal" data-title="Legal" data-group="Reference">
-      <h1>Legal</h1>
-      <p class="lede">
-        Disclaimers, jurisdictions, and what these docs are not. Written to be read rather
-        than to be unreadable.
-      </p>
-
-      <div class="hint hint-warn">        <div class="body">
-          <span class="htitle">Terms and Privacy are not finished</span>
-          <p>
-            The disclaimers below are complete and apply now. The Terms of Service and
-            Privacy Policy are still with counsel and the entity and governing law are not
-            settled, so both are marked <span class="badge badge-open">TBD</span> rather
-            than filled with something borrowed from another protocol. They ship before
-            anything is deployed. Nothing on this page is legal advice, including this
-            paragraph.
-          </p>
-        </div>
-      </div>
-
-      <h2 id="h-l-entity">Who is behind this</h2>
-      <div class="rows">
-        <div><span class="k">Legal entity</span><span class="d"><span class="badge badge-open">TBD</span></span></div>
-        <div><span class="k">Jurisdiction of incorporation</span><span class="d"><span class="badge badge-open">TBD</span></span></div>
-        <div><span class="k">Governing law</span><span class="d"><span class="badge badge-open">TBD</span></span></div>
-        <div><span class="k">Dispute resolution</span><span class="d"><span class="badge badge-open">TBD</span></span></div>
-        <div><span class="k">Registered contact</span><span class="d"><span class="badge badge-open">TBD</span></span></div>
-      </div>
-
-      <h2 id="h-l-nature">What this is, legally</h2>
-      <ul class="plain">
-        <li><strong>The protocol is software.</strong> Smart contracts on a public chain that anyone can interact with directly. It is not a bank, a broker, a custodian, an exchange, a fund, or a lender of record.</li>
-        <li><strong>We do not hold your assets.</strong> Collateral sits in a book's locker, controlled by the contract. Deposits sit in a book. No person or company takes custody of either at any point.</li>
-        <li><strong>Deposits are not deposits</strong> in the sense the word usually has. They are not insured by any deposit guarantee scheme, anywhere, and no government or private insurer stands behind them.</li>
-        <li><strong>The interface is separate from the protocol.</strong> This website is a convenience. The contracts can be used without it, and it may be restricted, changed or taken down without the protocol being affected.</li>
-        <li><strong>Interacting with a public smart contract is your decision.</strong> No advice is given, no suitability assessment is made, and no relationship is created by using it.</li>
-      </ul>
-
-      <h2 id="h-l-token">Token disclaimer</h2>
-      <div class="copyblock">
-        <span class="lbl">$LOAN</span>
-        $LOAN is a memecoin. It is <strong>not a security, not a share, not a bond, not a
-        unit in a fund, and not a claim on any asset, revenue or profit</strong>. Holding it
-        confers no ownership, no dividend, no distribution, no redemption right and no vote
-        on anything. It carries no expectation of profit from the efforts of others, and
-        nothing published by the project should be read as a projection, a forecast or a
-        promise of a return. Buybacks are a mechanism, not a price floor and not a
-        commitment to maintain any price. The token can go to zero, and memecoins routinely
-        do.
-      </div>
-
-      <h2 id="h-l-noadvice">No advice</h2>
-      <div class="copyblock">
-        <span class="lbl">Nothing here is advice</span>
-        Nothing in these docs, the interface, or any communication from the project is
-        financial, investment, legal, accounting or tax advice, or a recommendation to
-        borrow, lend, buy, sell or hold anything. No one involved in the project knows your
-        circumstances, has assessed whether anything here is suitable for you, or is acting
-        in your interest. If you need advice, get it from someone qualified whose job that
-        is.
-      </div>
-
-      <h2 id="h-l-risk">Risk warning</h2>
-      <div class="copyblock">
-        <span class="lbl">You can lose everything</span>
-        Borrowing against a memecoin can result in the <strong>permanent loss of the
-        deposited meme</strong>, without warning, without a grace period and without appeal.
-        Lending can result in the <strong>partial or total loss of the deposit</strong>,
-        with the junior tranche taking losses first. There is no insurance, no guarantee, no
-        backstop that always pays, and no party able to make you whole. Smart contracts can
-        contain bugs that take everything in a book or in every book. Prices are taken from
-        an on-chain TWAP that can be manipulated and that lags in a crash. Nothing is
-        deployed or audited at the time of writing. Only interact with money you can afford
-        to lose entirely. The full list is on <a href="#risks">Risks</a>.
-      </div>
-
-      <h2 id="h-l-tax">Tax</h2>
-      <div class="copyblock">
-        <span class="lbl">Your responsibility, entirely</span>
-        You are solely responsible for determining what taxes apply to your activity and for
-        reporting and paying them. Depositing, borrowing, repaying, being liquidated,
-        earning interest and receiving or disposing of tokens may each be taxable events
-        where you live, and the treatment varies widely by jurisdiction. The protocol does
-        not withhold tax, does not report to any authority, and issues no tax statements or
-        cost-basis records. You will need to reconstruct your own from chain data.
-      </div>
-
-      <h2 id="h-l-juris">Restricted jurisdictions</h2>
-      <p>
-        The list is not final and is with counsel.
-        <span class="badge badge-open">TBD</span> It will be published in full, rather than
-        described in general terms, before anything is deployed.
-      </p>
-      <div class="rows">
-        <div><span class="k">Interface access</span><span class="d">The website will block access from restricted jurisdictions and from sanctioned addresses. That is a restriction on this interface only.</span></div>
-        <div><span class="k">The contracts</span><span class="d">Permissionless. They cannot check where you are and we would not be able to stop you if we wanted to. Geo-blocking the interface is not a claim that the protocol is unreachable.</span></div>
-        <div><span class="k">Sanctions screening</span><span class="d">Applied at the interface against published sanctions lists. Being screened out here does not freeze anything: there is no on-chain blocklist and no role that could apply one.</span></div>
-        <div><span class="k">Your obligation</span><span class="d">If using this is unlawful where you are, it is unlawful whether or not the interface lets you through. That is on you, and the absence of a block is not permission.</span></div>
-      </div>
-
-      <h2 id="h-l-privacy">Privacy</h2>
-      <p>
-        The full policy is <span class="badge badge-open">TBD</span>. What is already true
-        and will not change:
-      </p>
-      <ul class="plain">
-        <li><strong>No account, no sign-up, no password.</strong> There is nothing to register and no profile to create.</li>
-        <li><strong>The chain is public.</strong> Every deposit, borrow, repayment and liquidation is visible to everyone, permanently, linked to your address. That is a property of the chain and nothing here can change it.</li>
-        <li><strong>Connecting a wallet shares your address</strong> with the interface and with whatever RPC provider it is using. That is how it works, and it is worth knowing.</li>
-        <li><strong>What the interface collects</strong>, how long it keeps it, and who it is shared with will be set out specifically rather than in general terms.</li>
-      </ul>
-
-      <h2 id="h-l-docs">About these docs</h2>
-      <ul class="plain">
-        <li><strong>The contracts are the truth.</strong> Where these docs and a deployed contract disagree, the contract is correct and the docs are a bug. Anything you are relying on for money should be read off chain state.</li>
-        <li><strong>Parameters marked <span class="badge badge-open">TBD</span> are not committed.</strong> Nothing published as a working value is a promise that it will be the final one.</li>
-        <li><strong>Videos and social posts do not override these docs.</strong> Where they disagree, the docs are right.</li>
-        <li><strong>Third-party links are not endorsements</strong>, and nothing here implies a partnership, affiliation or endorsement by any chain, exchange, brokerage or token project. A meme originating on a given chain may end up listed as collateral; that is not a relationship with anyone.</li>
-        <li><strong>The documentation text may be quoted and indexed freely,</strong> with or without attribution. The same content is published as plain text and Markdown for that purpose: <code>/llms.txt</code> is an index, <code>/llms-full.txt</code> is every page in one file, and appending <code>.md</code> to any page URL returns that page&#8217;s source text.</li>
-      </ul>
-
-      <div class="cards c3 foot">
-        <a class="card" href="#risks"><span class="ct">Risks</span><span class="cd">The risk warning, in full detail.</span></a>
-        <a class="card" href="#governance"><span class="ct">Governance and parameters</span><span class="cd">Who can change what, and how long it takes.</span></a>
-        <a class="card" href="#token"><span class="ct">The $LOAN Flywheel</span><span class="cd">What the token does, and does not do.</span></a>
-      </div>
-    </article>
 
     <p class="lastup" id="lastup">Last updated: 18 September 2026</p>
     <div class="pagenav" id="pagenav"></div>
@@ -5382,7 +5215,6 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       <span>Loan Meme docs</span>
       <span>Status: not deployed</span>
       <span>Nothing here is financial advice</span>
-      <span><a href="#legal">Legal</a></span>
       <span><a href="#risks">Risks</a></span>
       <span class="fkeys">Press <kbd>/</kbd> to search, <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> to change page</span>
     </footer>
