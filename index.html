@@ -941,16 +941,22 @@
     /* drawn diagrams keep a readable width and scroll; finished images fit the screen and open full size on tap */
     figure.fig svg, .hfn-art svg { min-width: 540px; }
   }
-  /* The health factor drawings come in two cuts: the wide one for larger screens and a
-     narrower one drawn for phones, so on a phone nothing scrolls sideways and the type
+  /* Drawn figures come in two cuts: the wide one for larger screens and a narrower one
+     drawn for phones (class cut-sm), so on a phone nothing scrolls sideways and the type
      stays readable instead of shrinking with the drawing. */
-  figure.fig svg.hf-sm, .hfn-art svg.hf-sm { display: none; }
+  figure.fig svg.cut-sm, .hfn-art svg.cut-sm { display: none; }
   @media (max-width: 640px) {
-    figure.fig svg.hf-lg, .hfn-art svg.hf-lg { display: none; }
-    figure.fig svg.hf-sm, .hfn-art svg.hf-sm { display: block; min-width: 0; max-width: 420px; margin: 0 auto; }
-    .hf-sm .fg-note { font-size: 12px; }
-    .hf-sm .fg-key  { font-size: 14.5px; }
-    .mini.hf-sm text { font-size: 11.5px; }
+    figure.fig svg.cut-lg, .hfn-art svg.cut-lg { display: none; }
+    figure.fig svg.cut-sm, .hfn-art svg.cut-sm { display: block; min-width: 0; max-width: 420px; margin: 0 auto; }
+    .cut-sm .fg-note { font-size: 12px; }
+    .cut-sm .fg-key  { font-size: 14.5px; }
+    .mini.cut-sm text { font-size: 11.5px; }
+    .chart.cut-sm .tick, .chart.cut-sm .reflbl { font-size: 11.5px; }
+    .chart.cut-sm .axlbl   { font-size: 11px; }
+    .chart.cut-sm .callout { font-size: 12px; }
+    .flow.cut-sm .bt { font-size: 13px; }
+    .flow.cut-sm .bs { font-size: 11.5px; }
+    .flow.cut-sm .el { font-size: 11px; }
   }
 
   /* Code block */
@@ -1890,7 +1896,7 @@
       </div>
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="hf-lg" viewBox="0 0 720 306" role="img" aria-labelledby="hf-gauge-title">
+          <svg class="cut-lg" viewBox="0 0 720 306" role="img" aria-labelledby="hf-gauge-title">
             <title id="hf-gauge-title">A scale of the health factor. A hard line marks 1.0: left of it the loan is liquidatable by anyone, right of it the loan is fine. A marker labelled "you" sits on the safe side. Repaying debt and adding more of the same meme push you right, away from the line. Interest accruing and the TWAP price falling push you left, toward it.</title>
             <defs>
               <marker id="hf-arrow-safe" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto">
@@ -1938,7 +1944,7 @@
             <path d="M500 300 H 330" fill="none" stroke="var(--rose)" stroke-width="2" marker-end="url(#hf-arrow-risk)"/>
             <text x="514" y="304" class="fg-note">TWAP price falls</text>
           </svg>
-          <svg class="hf-sm" viewBox="0 0 300 292" role="img" aria-labelledby="hf-gauge-title-sm">
+          <svg class="cut-sm" viewBox="0 0 300 292" role="img" aria-labelledby="hf-gauge-title-sm">
             <title id="hf-gauge-title-sm">A scale of the health factor. A hard line marks 1.0: left of it the loan is liquidatable by anyone, right of it the loan is fine. A marker labelled "you" sits on the safe side. Repaying debt and adding more of the same meme push you right, away from the line. Interest accruing and the TWAP price falling push you left, toward it.</title>
             <defs>
               <marker id="hf-arrow-safe-sm" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6.4" markerHeight="6.4" orient="auto">
@@ -1994,7 +2000,7 @@
         <ul class="hfnotes">
           <li>
             <div class="hfn-art">
-            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
+            <svg class="mini cut-lg" viewBox="0 0 592 128" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
               <path class="ln-mute" d="M14 14H32"/><text x="37" y="18">last trade</text>
               <path class="ln-acc" d="M104 14H122"/><text x="127" y="18" class="tx-acc">TWAP</text>
               <path class="base" d="M14 100H578"/>
@@ -2008,7 +2014,7 @@
               <text x="202" y="92">one-block wick: not liquidated</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
-            <svg class="mini hf-sm" viewBox="0 0 300 146" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
+            <svg class="mini cut-sm" viewBox="0 0 300 146" role="img" aria-label="The last trade jitters around a smooth TWAP line. A one-block wick dips below the liquidation level and a one-block spike jumps above it; the TWAP barely moves either time.">
               <path class="ln-mute" d="M10 14H26"/><text x="31" y="18">last trade</text>
               <path class="ln-acc" d="M100 14H116"/><text x="121" y="18" class="tx-acc">TWAP</text>
               <path class="base" d="M10 124H290"/>
@@ -2027,7 +2033,7 @@
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
+            <svg class="mini cut-lg" viewBox="0 0 592 128" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
               <path class="ln-gold" d="M14 14H32"/><text x="37" y="18" class="tx-gold">league threshold</text>
               <path class="ln-rose" d="M170 14H188"/><text x="193" y="18" class="tx-rose">your debt</text>
               <rect class="zone" x="14" y="40" width="286" height="36"/>
@@ -2041,7 +2047,7 @@
               <text x="294" y="118" text-anchor="end">demotion takes effect</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
-            <svg class="mini hf-sm" viewBox="0 0 300 140" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
+            <svg class="mini cut-sm" viewBox="0 0 300 140" role="img" aria-label="The league threshold steps down when the ticker is demoted, so the room between it and your unchanged debt shrinks.">
               <path class="ln-gold" d="M10 14H26"/><text x="31" y="18" class="tx-gold">league threshold</text>
               <path class="ln-rose" d="M140 14H156"/><text x="161" y="18" class="tx-rose">your debt</text>
               <rect class="zone" x="10" y="47.7" width="142" height="42.2"/>
@@ -2060,7 +2066,7 @@
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
+            <svg class="mini cut-lg" viewBox="0 0 592 128" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
               <path class="ln-acc" d="M14 14H32"/><text x="37" y="18" class="tx-acc">collateral &#215; threshold</text>
               <path class="ln-rose" d="M186 14H204"/><text x="209" y="18" class="tx-rose">debt</text>
               <path class="base" d="M14 100H578"/>
@@ -2070,7 +2076,7 @@
               <text x="489" y="40" text-anchor="end" class="tx-rose">HF &lt; 1</text>
               <text x="578" y="118" text-anchor="end">time &#8594;</text>
             </svg>
-            <svg class="mini hf-sm" viewBox="0 0 300 140" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
+            <svg class="mini cut-sm" viewBox="0 0 300 140" role="img" aria-label="With the price flat, collateral times threshold is a flat line while debt climbs with interest until it crosses, putting the health factor below one.">
               <path class="ln-acc" d="M10 14H26"/><text x="31" y="18" class="tx-acc">collateral &#215; threshold</text>
               <path class="ln-rose" d="M184 14H200"/><text x="205" y="18" class="tx-rose">debt</text>
               <path class="base" d="M10 118H290"/>
@@ -2085,7 +2091,7 @@
           </li>
           <li>
             <div class="hfn-art">
-            <svg class="mini hf-lg" viewBox="0 0 592 128" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
+            <svg class="mini cut-lg" viewBox="0 0 592 128" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
               <defs>
                 <marker id="hfn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                   <path d="M0 0 L10 5 L0 10 Z" fill="var(--moss)"/>
@@ -2101,7 +2107,7 @@
               <path class="ln-moss" d="M376 91H310" marker-end="url(#hfn-arrow)"/>
               <text x="386" y="95" class="tx-moss">repay</text>
             </svg>
-            <svg class="mini hf-sm" viewBox="0 0 300 104" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
+            <svg class="mini cut-sm" viewBox="0 0 300 104" role="img" aria-label="Two horizontal bars from the same origin: collateral runs longer than debt. An arrow extends the collateral bar and another pushes the debt bar back; either move raises the health factor.">
               <defs>
                 <marker id="hfn-arrow-sm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                   <path d="M0 0 L10 5 L0 10 Z" fill="var(--moss)"/>
@@ -2391,7 +2397,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="chart" viewBox="0 0 620 300" role="img" aria-label="Borrow rate against utilisation: a gentle slope up to the kink, then a steep slope to the maximum rate at full utilisation. The axis is labelled by formula rather than by value.">
+          <svg class="chart cut-lg" viewBox="0 0 620 300" role="img" aria-label="Borrow rate against utilisation: a gentle slope up to the kink, then a steep slope to the maximum rate at full utilisation. The axis is labelled by formula rather than by value.">
             <g class="gridline">
               <line x1="70" y1="40"  x2="590" y2="40"/>
               <line x1="70" y1="90"  x2="590" y2="90"/>
@@ -2417,6 +2423,33 @@
             <text class="callout" x="300" y="176">slope 1: gentle</text>
             <text class="callout" x="580" y="76" text-anchor="end">slope 2: steep</text>
             <text class="axlbl" x="330" y="286" text-anchor="middle">Utilisation</text>
+          </svg>
+          <svg class="chart cut-sm" viewBox="0 0 300 244" role="img" aria-label="Borrow rate against utilisation: a gentle slope up to the kink, then a steep slope to the maximum rate at full utilisation. The axis is labelled by formula rather than by value.">
+            <g class="gridline">
+              <line x1="62" y1="30" x2="280" y2="30"/>
+              <line x1="62" y1="71.5" x2="280" y2="71.5"/>
+              <line x1="62" y1="113" x2="280" y2="113"/>
+              <line x1="62" y1="154.5" x2="280" y2="154.5"/>
+            </g>
+            <line class="axis" x1="62" y1="196" x2="280" y2="196"/>
+            <g class="tick" text-anchor="end">
+              <text x="54" y="33.3">Max</text>
+              <text x="54" y="157.8">+slope 1</text>
+              <text x="54" y="199.3">base</text>
+            </g>
+            <g class="tick" text-anchor="middle">
+              <text x="62" y="214">0%</text>
+              <text x="171" y="214">50%</text>
+              <text x="280" y="214">100%</text>
+            </g>
+            <line class="refline" x1="236.4" y1="30" x2="236.4" y2="196"/>
+            <text class="reflbl" x="230.4" y="24" text-anchor="end">Kink</text>
+            <path class="series" d="M62 196 L236.4 154.5 L280 30"/>
+            <circle class="dot" cx="236.4" cy="154.5" r="4"><title>At the kink the rate is base + slope 1</title></circle>
+            <circle class="dot" cx="280" cy="30" r="4"><title>At full utilisation the rate is base + slope 1 + slope 2</title></circle>
+            <text class="callout" x="80" y="147">slope 1: gentle</text>
+            <text class="callout" x="229" y="58" text-anchor="end">slope 2: steep</text>
+            <text class="axlbl" x="171" y="236" text-anchor="middle">Utilisation</text>
           </svg>
         </div>
         <figcaption><b>Fig. R1</b> The shape, not the values. The kink sits where the league's parameters put it, which is not yet decided. The steep leg above it is the mechanism that gets lenders their money back, so the thinner the book the steeper it has to be.</figcaption>
@@ -2578,7 +2611,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="flow" viewBox="0 0 700 250" role="img" aria-label="Fee routing: the 2.5% fees on deposits, withdrawals, borrows and repayments, the 20% reserve factor on borrow interest and the 10% protocol share of the liquidation bonus all flow into the book's reserve; only the surplus above the reserve target leaves for the buyback contract.">
+          <svg class="flow cut-lg" viewBox="0 0 700 250" role="img" aria-label="Fee routing: the 2.5% fees on deposits, withdrawals, borrows and repayments, the 20% reserve factor on borrow interest and the 10% protocol share of the liquidation bonus all flow into the book's reserve; only the surplus above the reserve target leaves for the buyback contract.">
             <defs>
               <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                 <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
@@ -2620,6 +2653,50 @@
               <text class="bs" x="593" y="193" text-anchor="middle">sends nothing out, ever</text>
             </g>
             <path class="arrow" marker-end="url(#fa)" d="M418 119 H 458 Q 470 119 470 139 V 181 H 496"/>
+          </svg>
+          <svg class="flow cut-sm" viewBox="0 0 300 360" role="img" aria-label="Fee routing: the 2.5% fees on deposits, withdrawals, borrows and repayments, the 20% reserve factor on borrow interest and the 10% protocol share of the liquidation bonus all flow into the book's reserve; only the surplus above the reserve target leaves for the buyback contract.">
+            <defs>
+              <marker id="fa-sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
+              </marker>
+            </defs>
+            <g>
+              <rect class="box" x="8" y="8" width="244" height="44"/>
+              <text class="bt" x="130" y="26" text-anchor="middle">2.5% fees</text>
+              <text class="bs" x="130" y="43" text-anchor="middle">deposit, withdraw, borrow, repay</text>
+            </g>
+            <g>
+              <rect class="box" x="8" y="60" width="244" height="44"/>
+              <text class="bt" x="130" y="78" text-anchor="middle">Borrow interest</text>
+              <text class="bs" x="130" y="95" text-anchor="middle">20% reserve factor</text>
+            </g>
+            <g>
+              <rect class="box" x="8" y="112" width="244" height="44"/>
+              <text class="bt" x="130" y="130" text-anchor="middle">Liquidation bonus</text>
+              <text class="bs" x="130" y="147" text-anchor="middle">10% protocol share</text>
+            </g>
+            <!-- the three sources join one rail into the reserve -->
+            <path class="arrow" marker-end="url(#fa-sm)" d="M252 30 H 264 Q 272 30 272 38 V 185 Q 272 193 264 193 H 258"/>
+            <path class="arrow" d="M252 82 H 272"/>
+            <path class="arrow" d="M252 134 H 272"/>
+            <g>
+              <rect class="box box-a" x="8" y="170" width="244" height="46"/>
+              <text class="bt" x="130" y="189" text-anchor="middle">The book's reserve</text>
+              <text class="bs" x="130" y="206" text-anchor="middle">paid before anything else</text>
+            </g>
+            <path class="arrow" marker-end="url(#fa-sm)" d="M130 216 V 238"/>
+            <text class="el" x="138" y="231">surplus</text>
+            <g>
+              <rect class="box box-g" x="8" y="242" width="244" height="46"/>
+              <text class="bt" x="130" y="261" text-anchor="middle">Buyback contract</text>
+              <text class="bs" x="130" y="278" text-anchor="middle">only once the target is met</text>
+            </g>
+            <path class="arrow" marker-end="url(#fa-sm)" d="M252 205 H 276 Q 284 205 284 213 V 320 Q 284 328 276 328 H 258"/>
+            <g>
+              <rect class="box box-r" x="8" y="305" width="244" height="46"/>
+              <text class="bt" x="130" y="324" text-anchor="middle">Book carrying bad debt</text>
+              <text class="bs" x="130" y="341" text-anchor="middle">sends nothing out, ever</text>
+            </g>
           </svg>
         </div>
         <figcaption><b>Fig. F1</b> Fees are per book. A book with bad debt outstanding routes nothing to buybacks until the hole is closed, so a loss in one book cannot be papered over with another book's revenue.</figcaption>
@@ -3151,7 +3228,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="flow" viewBox="0 0 700 300" role="img" aria-label="Loss waterfall in a single book: the shortfall hits the book's reserve first, then the junior tranche in that book, then the senior tranche in that book, and never reaches other books.">
+          <svg class="flow cut-lg" viewBox="0 0 700 300" role="img" aria-label="Loss waterfall in a single book: the shortfall hits the book's reserve first, then the junior tranche in that book, then the senior tranche in that book, and never reaches other books.">
             <defs>
               <marker id="wa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                 <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
@@ -3193,6 +3270,47 @@
             <text class="bs" x="590" y="148" text-anchor="middle">its own reserve,</text>
             <text class="bs" x="590" y="164" text-anchor="middle">its own junior and senior,</text>
             <text class="bs" x="590" y="180" text-anchor="middle">untouched by this</text>
+          </svg>
+          <svg class="flow cut-sm" viewBox="0 0 300 400" role="img" aria-label="Loss waterfall in a single book: the shortfall hits the book's reserve first, then the junior tranche in that book, then the senior tranche in that book, and never reaches other books.">
+            <defs>
+              <marker id="wa-sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
+              </marker>
+            </defs>
+
+            <rect class="box box-r" x="8" y="8" width="284" height="46"/>
+            <text class="bt" x="150" y="27" text-anchor="middle">Shortfall in one book</text>
+            <text class="bs" x="150" y="44" text-anchor="middle">debt left with no collateral</text>
+
+            <path class="arrow" marker-end="url(#wa-sm)" d="M150 54 V 74"/>
+
+            <rect class="box box-a" x="8" y="78" width="284" height="46"/>
+            <text class="bt" x="150" y="97" text-anchor="middle">1 &#183; The book's reserve</text>
+            <text class="bs" x="150" y="114" text-anchor="middle">absorbs up to its balance</text>
+
+            <path class="arrow" marker-end="url(#wa-sm)" d="M150 124 V 144"/>
+            <text class="el" x="160" y="138">remainder</text>
+
+            <rect class="box" x="8" y="148" width="284" height="46"/>
+            <text class="bt" x="150" y="167" text-anchor="middle">2 &#183; Junior, in this book</text>
+            <text class="bs" x="150" y="184" text-anchor="middle">to zero before senior is touched</text>
+
+            <path class="arrow" marker-end="url(#wa-sm)" d="M150 194 V 214"/>
+            <text class="el" x="160" y="208">remainder</text>
+
+            <rect class="box" x="8" y="218" width="284" height="46"/>
+            <text class="bt" x="150" y="237" text-anchor="middle">3 &#183; Senior, in this book</text>
+            <text class="bs" x="150" y="254" text-anchor="middle">only after junior is gone</text>
+
+            <path class="arrow" marker-end="url(#wa-sm)" d="M150 264 V 284"/>
+
+            <rect class="box box-g" x="8" y="288" width="284" height="26"/>
+            <text class="bs" x="150" y="305" text-anchor="middle">Stops here. It never reaches another book.</text>
+
+            <rect class="box" x="8" y="330" width="284" height="62" stroke-dasharray="4 4"/>
+            <text class="bt" x="150" y="351" text-anchor="middle">Every other book</text>
+            <text class="bs" x="150" y="368" text-anchor="middle">its own reserve, its own junior and senior,</text>
+            <text class="bs" x="150" y="384" text-anchor="middle">untouched by this</text>
           </svg>
         </div>
         <figcaption><b>Fig. T1</b> The waterfall runs inside one book. Junior is subordinated to senior <em>in the book they are both in</em>, and nowhere else. Junior money in the MEME_C book does not stand behind senior money in the MEME_A book.</figcaption>
@@ -3897,7 +4015,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="chart" viewBox="0 0 640 286" role="img" aria-label="Line chart. The minimum bonus a liquidator needs rises from about 0.5 percent at zero exit slippage to about 25.6 percent at 20 percent slippage. A fixed 10 percent bonus stops attracting liquidators at 8.6 percent slippage and a fixed 15 percent at 12.6 percent. The ceiling set by a 0.85 liquidation threshold is 17.6 percent, and the feasible window closes entirely at 14.5 percent slippage.">
+          <svg class="chart cut-lg" viewBox="0 0 640 286" role="img" aria-label="Line chart. The minimum bonus a liquidator needs rises from about 0.5 percent at zero exit slippage to about 25.6 percent at 20 percent slippage. A fixed 10 percent bonus stops attracting liquidators at 8.6 percent slippage and a fixed 15 percent at 12.6 percent. The ceiling set by a 0.85 liquidation threshold is 17.6 percent, and the feasible window closes entirely at 14.5 percent slippage.">
             <path class="band" d="M 78.0 234.5 L 104.1 227.3 L 130.2 220.0 L 156.3 212.5 L 182.4 204.9 L 208.5 197.1 L 234.6 189.1 L 260.7 181.0 L 286.8 172.7 L 312.9 164.2 L 339.0 155.6 L 365.1 146.7 L 391.2 137.6 L 417.3 128.3 L 443.4 118.9 L 457.5 113.6 L 78.0 113.6 Z"/>
             <g class="gridline">
               <line x1="78" y1="26"    x2="600" y2="26"/>
@@ -3936,6 +4054,45 @@
             <text class="callout" x="140" y="150">Feasible window</text>
             <text class="axlbl" x="339" y="278" text-anchor="middle">Exit slippage</text>
           </svg>
+          <svg class="chart cut-sm" viewBox="0 0 300 246" role="img" aria-label="Line chart. The minimum bonus a liquidator needs rises from about 0.5 percent at zero exit slippage to about 25.6 percent at 20 percent slippage. A fixed 10 percent bonus stops attracting liquidators at 8.6 percent slippage and a fixed 15 percent at 12.6 percent. The ceiling set by a 0.85 liquidation threshold is 17.6 percent, and the feasible window closes entirely at 14.5 percent slippage.">
+            <path class="band" d="M 40 197.1 L 52.3 191.2 L 64.6 185.2 L 76.9 179.1 L 89.2 172.8 L 101.5 166.4 L 113.8 159.9 L 126.1 153.2 L 138.4 146.4 L 150.7 139.4 L 163 132.4 L 175.3 125.1 L 187.6 117.6 L 199.9 110 L 212.2 102.2 L 218.8 97.9 L 40 97.9 Z"/>
+            <g class="gridline">
+              <line x1="40" y1="26" x2="286" y2="26"/>
+              <line x1="40" y1="84" x2="286" y2="84"/>
+              <line x1="40" y1="142" x2="286" y2="142"/>
+            </g>
+            <line class="axis" x1="40" y1="200" x2="286" y2="200"/>
+            <g class="tick" text-anchor="end">
+              <text x="34" y="29.3">30%</text>
+              <text x="34" y="87.3">20%</text>
+              <text x="34" y="145.3">10%</text>
+              <text x="34" y="203.3">0%</text>
+            </g>
+            <g class="tick" text-anchor="middle">
+              <text x="40" y="217">0%</text>
+              <text x="101.5" y="217">5%</text>
+              <text x="163" y="217">10%</text>
+              <text x="224.5" y="217">15%</text>
+              <text x="286" y="217">20%</text>
+            </g>
+
+            <line class="refline" x1="40" y1="97.9" x2="286" y2="97.9"/>
+            <text class="reflbl" x="44" y="110">Ceiling at 0.85 &#8212; 17.6%</text>
+            <line class="refline" x1="40" y1="113" x2="286" y2="113"/>
+            <text class="reflbl" x="286" y="109" text-anchor="end">Fixed 15%</text>
+            <line class="refline" x1="40" y1="142" x2="286" y2="142"/>
+            <text class="reflbl" x="286" y="138" text-anchor="end">Fixed 10%</text>
+
+            <path class="series" d="M 40 197.1 L 52.3 191.2 L 64.6 185.2 L 76.9 179.1 L 89.2 172.8 L 101.5 166.4 L 113.8 159.9 L 126.1 153.2 L 138.4 146.4 L 150.7 139.4 L 163 132.4 L 175.3 125.1 L 187.6 117.6 L 199.9 110 L 212.2 102.2 L 224.5 94.2 L 236.8 86.1 L 249.1 77.7 L 261.4 69.2 L 273.7 60.4 L 286 51.4"/>
+
+            <circle class="dot" cx="101.5" cy="166.4" r="4"><title>At 5% exit slippage a liquidator needs 5.79%</title></circle>
+            <circle class="dot" cx="146.3" cy="142" r="4"><title>At 8.64% slippage a fixed 10% bonus stops clearing</title></circle>
+            <circle class="dot" cx="195.1" cy="113" r="4"><title>At 12.61% slippage a fixed 15% bonus stops clearing</title></circle>
+            <circle class="dot-stop" cx="218.8" cy="97.9" r="4.5"><title>At 14.54% slippage the floor meets the ceiling: no bonus satisfies both</title></circle>
+            <text class="callout stoplbl" x="210" y="94" text-anchor="end">No bonus works</text>
+            <text class="callout" x="69" y="128">Feasible window</text>
+            <text class="axlbl" x="163" y="238" text-anchor="middle">Exit slippage</text>
+          </svg>
         </div>
         <figcaption><b>Fig. L1</b> The minimum bonus a liquidator will accept, against exit slippage, with gas and financing at 0.5% of the repay. The shaded area is where a bonus satisfies both bounds. Illustrative, at a 0.85 liquidation threshold.</figcaption>
       </figure>
@@ -3960,7 +4117,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="flow" viewBox="0 0 720 240" role="img" aria-label="Two paths from a health factor dropping below 1. Under a fixed bonus the bonus is 12 percent, 10 to 15 by book, from the first block, the fastest bot wins the ordering race, and the borrower pays the full bonus every time. Under a reverse auction the bonus starts at zero and rises each block, the first bot whose profit turns positive fills, and the borrower pays only the clearing bonus.">
+          <svg class="flow cut-lg" viewBox="0 0 720 240" role="img" aria-label="Two paths from a health factor dropping below 1. Under a fixed bonus the bonus is 12 percent, 10 to 15 by book, from the first block, the fastest bot wins the ordering race, and the borrower pays the full bonus every time. Under a reverse auction the bonus starts at zero and rises each block, the first bot whose profit turns positive fills, and the borrower pays only the clearing bonus.">
             <defs>
               <marker id="la" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                 <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
@@ -4001,6 +4158,50 @@
             <text class="bt" x="653" y="178" text-anchor="middle">Clearing bonus</text>
             <text class="bs" x="653" y="196" text-anchor="middle">and nothing more</text>
           </svg>
+          <svg class="flow cut-sm" viewBox="0 0 300 286" role="img" aria-label="Two paths from a health factor dropping below 1. Under a fixed bonus the bonus is 12 percent, 10 to 15 by book, from the first block, the fastest bot wins the ordering race, and the borrower pays the full bonus every time. Under a reverse auction the bonus starts at zero and rises each block, the first bot whose profit turns positive fills, and the borrower pays only the clearing bonus.">
+            <defs>
+              <marker id="la-sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong)"/>
+              </marker>
+            </defs>
+            <rect class="box" x="70" y="8" width="160" height="46"/>
+            <text class="bt" x="150" y="27" text-anchor="middle">HF drops below 1</text>
+            <text class="bs" x="150" y="44" text-anchor="middle">anyone may act</text>
+
+            <path class="arrow" d="M150 54 V 66 M76 66 H 224 M76 66 V 72 M224 66 V 72"/>
+            <circle cx="150" cy="66" r="4.5" fill="var(--accent)"/>
+            <text class="el" x="76" y="88" text-anchor="middle">Fixed bonus</text>
+            <text class="el" x="224" y="88" text-anchor="middle">Reverse auction</text>
+            <path class="arrow" marker-end="url(#la-sm)" d="M76 94 V 106"/>
+            <path class="arrow" marker-end="url(#la-sm)" d="M224 94 V 106"/>
+
+            <rect class="box" x="6" y="110" width="140" height="44"/>
+            <text class="bt" x="76" y="128" text-anchor="middle">12%</text>
+            <text class="bs" x="76" y="145" text-anchor="middle">from the first block</text>
+            <rect class="box" x="154" y="110" width="140" height="44"/>
+            <text class="bt" x="224" y="128" text-anchor="middle">Starts at 0%</text>
+            <text class="bs" x="224" y="145" text-anchor="middle">rises each block</text>
+
+            <path class="arrow" marker-end="url(#la-sm)" d="M76 154 V 168"/>
+            <path class="arrow" marker-end="url(#la-sm)" d="M224 154 V 168"/>
+
+            <rect class="box" x="6" y="172" width="140" height="44"/>
+            <text class="bt" x="76" y="190" text-anchor="middle">Fastest bot wins</text>
+            <text class="bs" x="76" y="207" text-anchor="middle">a race on ordering</text>
+            <rect class="box" x="154" y="172" width="140" height="44"/>
+            <text class="bt" x="224" y="190" text-anchor="middle">First profitable bid</text>
+            <text class="bs" x="224" y="207" text-anchor="middle">a race on price</text>
+
+            <path class="arrow" marker-end="url(#la-sm)" d="M76 216 V 230"/>
+            <path class="arrow" marker-end="url(#la-sm)" d="M224 216 V 230"/>
+
+            <rect class="box box-r" x="6" y="234" width="140" height="44"/>
+            <text class="bt" x="76" y="252" text-anchor="middle">Full bonus</text>
+            <text class="bs" x="76" y="269" text-anchor="middle">paid every time</text>
+            <rect class="box box-g" x="154" y="234" width="140" height="44"/>
+            <text class="bt" x="224" y="252" text-anchor="middle">Clearing bonus</text>
+            <text class="bs" x="224" y="269" text-anchor="middle">and nothing more</text>
+          </svg>
         </div>
         <figcaption><b>Fig. L2</b> Under a fixed bonus the competition is for transaction ordering, which is why the surplus leaks to the block builder rather than staying in the book. Under an auction the competition is on price, and the winning bid is the market's own estimate of what the liquidation costs.</figcaption>
       </figure>
@@ -4014,7 +4215,7 @@
 
       <figure class="fig">
         <div class="fig-stage">
-          <svg class="chart" viewBox="0 0 640 286" role="img" aria-label="Line chart. Under a reverse auction the bonus ramps from zero to 20 percent over five minutes and clears at 5.79 percent after about 87 seconds at 5 percent exit slippage. The fixed 12 percent bonus is paid in full from the first block.">
+          <svg class="chart cut-lg" viewBox="0 0 640 286" role="img" aria-label="Line chart. Under a reverse auction the bonus ramps from zero to 20 percent over five minutes and clears at 5.79 percent after about 87 seconds at 5 percent exit slippage. The fixed 12 percent bonus is paid in full from the first block.">
             <g class="gridline">
               <line x1="66" y1="26"    x2="600" y2="26"/>
               <line x1="66" y1="68.4"  x2="600" y2="68.4"/>
@@ -4044,6 +4245,37 @@
             <path class="series" d="M 66 238 L 600 68.4"/>
             <circle class="dot" cx="220.6" cy="188.9" r="5"><title>87 seconds in, the bonus reaches 5.79% and the first bot fills</title></circle>
             <text class="axlbl" x="333" y="278" text-anchor="middle">Seconds since liquidatable</text>
+          </svg>
+          <svg class="chart cut-sm" viewBox="0 0 300 246" role="img" aria-label="Line chart. Under a reverse auction the bonus ramps from zero to 20 percent over five minutes and clears at 5.79 percent after about 87 seconds at 5 percent exit slippage. The fixed 12 percent bonus is paid in full from the first block.">
+            <g class="gridline">
+              <line x1="44" y1="26" x2="284" y2="26"/>
+              <line x1="44" y1="60.8" x2="284" y2="60.8"/>
+              <line x1="44" y1="130.4" x2="284" y2="130.4"/>
+            </g>
+            <line class="axis" x1="44" y1="200" x2="284" y2="200"/>
+            <g class="tick" text-anchor="end">
+              <text x="38" y="29.3">25%</text>
+              <text x="38" y="64.1">20%</text>
+              <text x="38" y="133.7">10%</text>
+              <text x="38" y="203.3">0%</text>
+            </g>
+            <g class="tick" text-anchor="middle">
+              <text x="44" y="217">0 s</text>
+              <text x="124" y="217">100 s</text>
+              <text x="204" y="217">200 s</text>
+              <text x="282" y="217">300 s</text>
+            </g>
+
+            <line class="refline" x1="44" y1="116.4" x2="284" y2="116.4"/>
+            <text class="reflbl" x="284" y="128" text-anchor="end">Fixed bonus 12%</text>
+            <line class="refline" x1="44" y1="159.7" x2="284" y2="159.7"/>
+            <text class="reflbl" x="284" y="173" text-anchor="end">Clearing bonus &#8212; 5.79%</text>
+            <line class="refline" x1="113.5" y1="26" x2="113.5" y2="200"/>
+            <text class="callout" x="118" y="38">Auction clears, 87 s</text>
+
+            <path class="series" d="M44 200 L284 60.8"/>
+            <circle class="dot" cx="113.5" cy="159.7" r="4.5"><title>87 seconds in, the bonus reaches 5.79% and the first bot fills</title></circle>
+            <text class="axlbl" x="164" y="238" text-anchor="middle">Seconds since liquidatable</text>
           </svg>
         </div>
         <figcaption><b>Fig. L3</b> An illustrative ramp, 0 to 20% over five minutes, against the fixed 12%, at 5% exit slippage. The gap between the two lines at the clearing point is the value the fixed model hands over.</figcaption>
