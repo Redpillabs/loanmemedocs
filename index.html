@@ -5163,218 +5163,90 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
     <article class="page" id="page-compare" data-title="What makes us different" data-group="Reference">
       <h1>What makes us different</h1>
       <p class="lede">
-        Against Aave, Morpho, Euler and Silo, honestly, including where they are better and
-        where we are least sure of our own design. This is the first question everyone asks,
-        so it gets a page rather than a paragraph.
+        How we compare with Aave, Morpho, Euler and Silo, in short. Including where they
+        are better.
       </p>
 
-      <h2 id="h-c-table">Side by side</h2>
+      <h2 id="h-c-table">At a glance</h2>
       <div class="scroll-x">
         <table>
-          <thead><tr><th>&nbsp;</th><th>LOAN MEME</th><th>Aave v3/v4</th><th>Morpho / Euler / Silo</th></tr></thead>
+          <thead><tr><th>&nbsp;</th><th>LOAN MEME</th><th>Aave</th><th>Morpho / Euler / Silo</th></tr></thead>
           <tbody>
             <tr>
-              <td class="tag">Market structure</td>
-              <td class="is-us">One book = one meme + one stable, isolated</td>
-              <td>Shared pool, cross-collateral, e-mode, isolation mode</td>
-              <td>Isolated markets (Blue, EVK, Silo)</td>
-            </tr>
-            <tr>
-              <td class="tag">Collateral accepted</td>
+              <td class="tag">Collateral</td>
               <td class="is-us">Memecoins only</td>
-              <td>Majors, LSTs, some stables</td>
-              <td>Anything a curator will list</td>
+              <td>ETH and other major coins</td>
+              <td>Whatever a curator lists</td>
             </tr>
             <tr>
-              <td class="tag">Pricing</td>
-              <td class="is-us">TWAP of the canonical on-chain pool</td>
-              <td>Chainlink and Chronicle feeds. Aave rejects DEX TWAPs as a primary source.</td>
-              <td>Oracle-agnostic, chosen by the curator, immutable per market</td>
+              <td class="tag">Markets</td>
+              <td class="is-us">One separate book per meme</td>
+              <td>One shared pool</td>
+              <td>Separate markets</td>
             </tr>
             <tr>
-              <td class="tag">Liquidation incentive</td>
-              <td class="is-us">A fixed 12% bonus, 10 to 15% by book, with 10% of it to the book's reserve. The fixed-versus-auction decision is still open</td>
-              <td>Fixed bonus per asset, close factor, liquidation protocol fee. Dutch auction in v4.</td>
-              <td>Euler: reverse Dutch auction starting at 0%</td>
-            </tr>
-            <tr>
-              <td class="tag">Parameter setting</td>
-              <td class="is-us">T1/T2/T3 leagues set by the team, behind a timelock, executed by the audited contract</td>
-              <td>DAO plus risk service providers</td>
-              <td>Permissionless, curator plus timelock</td>
+              <td class="tag">Price</td>
+              <td class="is-us">Average price in the meme's main on-chain pool (TWAP)</td>
+              <td>Professional price feeds</td>
+              <td>Chosen by the curator</td>
             </tr>
             <tr>
               <td class="tag">Lender losses</td>
-              <td class="is-us">Senior and junior tranches, ordered inside each book</td>
-              <td>Mutualised across the pool, plus the Umbrella staked backstop</td>
-              <td>Socialised per market, no backstop</td>
+              <td class="is-us">Junior takes the first loss, senior only after</td>
+              <td>Shared by everyone, plus a staked backstop</td>
+              <td>Shared by everyone in the market</td>
             </tr>
             <tr>
-              <td class="tag">Backstop</td>
-              <td class="is-us">A per-book reserve, which is not a backstop and we do not call it one</td>
-              <td>Umbrella, staked capital that can be slashed</td>
-              <td>None</td>
+              <td class="tag">Liquidation</td>
+              <td class="is-us">Fixed 12% bonus, 10 to 15% by book</td>
+              <td>Fixed bonus per asset</td>
+              <td>Euler: an auction that starts at 0%</td>
             </tr>
             <tr>
-              <td class="tag">Governance</td>
-              <td class="is-us">Multisig plus timelock. The token votes on nothing.</td>
-              <td>Token governance</td>
-              <td>Permissionless deployment, curated vaults</td>
-            </tr>
-            <tr>
-              <td class="tag">Documentation</td>
-              <td class="is-us">These pages, plus <code>llms.txt</code>, <code>llms-full.txt</code> and a <code>.md</code> of every page</td>
-              <td>~100 pages, <code>.md</code> per page, <code>llms.txt</code>, GraphQL API, MCP server</td>
-              <td>Same, plus <code>llms-full.txt</code> and <code>llms-pages.json</code></td>
+              <td class="tag">Who sets the rules</td>
+              <td class="is-us">The team, behind a timelock. The token votes on nothing.</td>
+              <td>A DAO and risk firms</td>
+              <td>Curators, behind a timelock</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="h-c-risk">How we write about risk</h2>
-      <p>
-        This is a difference in the documentation rather than in the protocol, and it is
-        deliberate. Two things on these pages have no equivalent at Aave, Morpho or Euler:
-      </p>
+      <h2 id="h-c-really">What is actually ours</h2>
+      <p>Three things. The rest is a variation on something another protocol shipped first.</p>
       <ul class="plain">
-        <li><strong>Losses are ranked by how likely they are, not by how bad they are.</strong> The list on <a href="#lenders">Lenders</a> is ordered by frequency, with a badge on each row saying what is actually at stake: your deposit, your access, or only your yield. The two orderings do not line up. The most likely loss is not the largest, and the largest sits near the bottom. Most protocols publish a flat list of risks in which a smart contract exploit and a temporary withdrawal delay look equally probable.</li>
-        <li><strong>There is a page that tells you not to use it.</strong> "Who should stay out" on <a href="#start">Start here</a> names the people this is wrong for, on both sides of the book. We have not found the equivalent anywhere else.</li>
+        <li><strong>Memecoins as collateral.</strong> Big lenders will not accept a two-week-old meme. We accept that it can go to zero and build around it: low LTVs, a slow average price, borrow caps tied to pool depth, and one book per token so a collapse stays contained.</li>
+        <li><strong>Ordered losses inside each book.</strong> Junior lenders take the first loss and earn more for it. Senior lenders earn less and are hit last. Almost no DeFi lender does this. See <a href="#tranches">Senior and junior</a>.</li>
+        <li><strong>Leagues instead of case-by-case rules.</strong> Each token is scored on on-chain data and placed in T1, T2 or T3, which sets its terms. Cruder than a risk team, but it works on a meme that launched yesterday. See <a href="#leagues">Leagues and rank</a>.</li>
       </ul>
-      <p>
-        Neither of those makes the protocol safer. They make it easier to find out what you
-        are taking on before you take it on, which is a different thing and worth saying
-        plainly rather than implying.
-      </p>
 
-      <h2 id="h-c-really">The three things that are actually ours</h2>
-      <p>Everything else on that table is a variation on a design someone else shipped first.</p>
+      <h2 id="h-c-worse">Where we are weaker</h2>
+      <ul class="plain">
+        <li><strong>The price is our biggest risk.</strong> A thin pool can be pushed, and the average lags in a crash. No professional feed exists for new memes. See <a href="#oracle">Oracle and listing</a>.</li>
+        <li><strong>No track record.</strong> Nothing is deployed. Aave has survived years of attacks.</li>
+        <li><strong>A small safety net.</strong> Each book's reserve only covers small losses. There is no big backstop behind it.</li>
+        <li><strong>Liquidations are not settled.</strong> A fixed bonus can be too low to attract liquidators or cost the borrower more than needed. An auction is still an option. See <a href="#liquidations">Liquidations</a>.</li>
+        <li><strong>Senior and junior is new.</strong> There are few precedents to learn from, and it ships only if it can be built safely.</li>
+        <li><strong>Less flexible.</strong> Aave lets you borrow against several assets at once. Here every meme stands alone, which is the price of containing losses.</li>
+        <li><strong>A trusted team.</strong> A multisig controls the settings. The timelock slows it down, it does not stop it.</li>
+      </ul>
 
-      <h3>1. The collateral nobody else will touch</h3>
-      <p>
-        Aave will not list a two-week-old memecoin and should not. There is no professional
-        price feed for one, the pool is thin enough to push, and the asset can go to zero in
-        an afternoon. The entire protocol is an answer to the question of what a lending
-        market looks like when you accept that and design around it instead of pretending
-        otherwise: low LTVs, long TWAP windows, caps tied to depth, and one book per token
-        so a death is contained.
-      </p>
-
-      <h3>2. Ordered losses inside an isolated market</h3>
-      <p>
-        Isolation is not new. Morpho Blue, Euler EVK and Silo all have it. What is unusual
-        is ordering the loss <em>inside</em> the isolated market, so that two lenders in the
-        same book can hold different risk. Morpho's vaults diversify across markets; they do
-        not subordinate one lender to another within one.
-      </p>
-      <p>
-        Senior and junior tranching barely exists in DeFi lending at all. The closest
-        analogues are not lending protocols: they are private credit, Maple and Centrifuge,
-        where a junior tranche absorbing the first loss is the ordinary structure rather
-        than an experiment. That is both the most original thing here and the least proven.
-        See <a href="#tranches">Senior and junior</a>.
-      </p>
-
-      <h3>3. A league system instead of per-asset governance</h3>
-      <p>
-        Aave sets parameters per asset through a DAO and risk providers. Morpho lets a
-        curator pick whatever they like. Here a token is scored on measurable on-chain
-        properties and drops into one of three buckets, which sets its terms. It is cruder
-        than per-asset risk analysis and deliberately so: there will never be a risk
-        provider modelling a meme that launched on Tuesday, so the parameters have to come
-        from something a script can compute. See <a href="#leagues">Leagues and rank</a>.
-      </p>
-
-      <h2 id="h-c-unsure">The three parts we are least sure about</h2>
-      <p>
-        Published here rather than buried, because a comparison page that only lists
-        strengths is a pitch deck.
-      </p>
-      <div class="scroll-x">
-        <table>
-          <thead><tr><th>Design</th><th>The objection</th><th>Where it is worked through</th></tr></thead>
-          <tbody>
-            <tr>
-              <td class="k">A fixed liquidation bonus</td>
-              <td>A fixed bonus is the most expensive liquidation model and the most MEV-exposed. Euler moved to a reverse Dutch auction precisely because a fixed bonus transfers value from borrower to liquidator with no necessity. On a meme that gaps 40%, a fixed 15% is either too little, so nobody liquidates and the book takes bad debt, or too much, so the borrower is wiped further than they needed to be.</td>
-              <td>Both bounds, the auction alternative and the numbers on each: <a href="#liquidations">Liquidations</a>. The decision is not made.</td>
-            </tr>
-            <tr>
-              <td class="k">Senior and junior tranching</td>
-              <td>It barely exists in DeFi lending, which means there are very few other people's mistakes to learn from. Novel code is riskier code, and an audit does not change that it has never been attacked in production.</td>
-              <td>The waterfall, the cap, the rate split and the wipeout case: <a href="#tranches">Senior and junior</a>. It ships only if it can be built so losses stay inside one book.</td>
-            </tr>
-            <tr>
-              <td class="k">A DEX TWAP as the only price</td>
-              <td>On memecoins this is the single most likely point of failure. It is manipulable by anyone willing to hold a price away from the market for a full window, and on a thin pool that is cheaper than it sounds. It also lags in a crash, which is exactly when a book needs it not to.</td>
-              <td>Window, staleness rule, cardinality, deviation breaker and the dead-pool procedure: <a href="#oracle">Oracle specification</a>.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        All three used to be presented as decisions. They are parameters, and the pages
-        above now treat them as parameters with the reasoning attached.
-      </p>
-
-      <h2 id="h-c-worse">Where they are better than us</h2>
-      <div class="scroll-x">
-        <table>
-          <thead><tr><th>They have</th><th>We do not</th></tr></thead>
-          <tbody>
-            <tr>
-              <td class="k">Professional oracles</td>
-              <td>A DEX TWAP is the weakest part of this protocol, and there is no better source for these assets. Aave's refusal to use DEX TWAPs as a primary source is a correct decision for the assets Aave lists.</td>
-            </tr>
-            <tr>
-              <td class="k">Years in production</td>
-              <td>Nothing is deployed. Aave has been attacked continuously for years and is still standing, which is a kind of evidence nothing here can match.</td>
-            </tr>
-            <tr>
-              <td class="k">A real backstop</td>
-              <td>Umbrella is staked capital that can be slashed to cover a shortfall. Our per-book reserve is funded only from that book's own revenue and will not survive a real event.</td>
-            </tr>
-            <tr>
-              <td class="k">Deep liquidity and mature liquidator networks</td>
-              <td>Established markets have bots competing on every position. A new protocol on thin assets may not attract one when it needs one, which is the failure mode on <a href="#liquidations">Liquidations</a>.</td>
-            </tr>
-            <tr>
-              <td class="k">Auction-based liquidation</td>
-              <td>Euler's reverse auction discovers the price rather than fixing it. Our fixed bonus is the more expensive model, and that is an open question rather than a settled choice.</td>
-            </tr>
-            <tr>
-              <td class="k">Credibly decentralised governance</td>
-              <td>A multisig is a trusted party. A timelock bounds how fast it can act, not whether it can.</td>
-            </tr>
-            <tr>
-              <td class="k">Capital efficiency</td>
-              <td>Cross-collateral and e-mode let a borrower do much more with the same assets. One isolated book per meme is the least capital-efficient structure available, and that is the price of containment.</td>
-            </tr>
-            <tr>
-              <td class="k">Machine-readable data, not just docs</td>
-              <td>We ship <code>llms.txt</code>, <code>llms-full.txt</code> and a <code>.md</code> of every page, so the documentation is readable by a program. What we do not have is theirs on the data side: no public subgraph, no GraphQL endpoint, no MCP server. Nothing is deployed, so there is no live data to serve, but that is a gap rather than an excuse.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h2 id="h-c-choose">Which one you actually want</h2>
+      <h2 id="h-c-choose">Is it for you?</h2>
       <div class="cols">
         <div class="panel panel-no">
           <span class="eyebrow">Use something else if</span>
           <ul class="plain">
-            <li>Your collateral is ETH, a major, or an LST. Aave will give you better terms and a far better oracle.</li>
-            <li>You want capital efficiency across several assets at once.</li>
-            <li>You want a lending protocol with a track record.</li>
-            <li>You are lending stables and want the lowest risk available. This is not it, in either tranche.</li>
+            <li>Your collateral is ETH or another major coin.</li>
+            <li>You want a protocol with a track record.</li>
+            <li>You are lending and want the lowest risk possible.</li>
           </ul>
         </div>
         <div class="panel panel-yes">
           <span class="eyebrow">This might fit if</span>
           <ul class="plain">
-            <li>You hold a meme, want liquidity, and will not sell it.</li>
-            <li>You want the loss from one bad token contained to the people who chose that token.</li>
-            <li>You are lending and want to pick your position in the loss order rather than take a blended one.</li>
-            <li>You have read <a href="#risks">Risks</a> in full and none of it surprised you.</li>
+            <li>You hold a meme, want cash, and do not want to sell it.</li>
+            <li>You want one bad token's losses kept inside its own book.</li>
+            <li>You lend and want to choose your place in the loss order.</li>
           </ul>
         </div>
       </div>
@@ -5382,7 +5254,7 @@ event BorrowsPaused (address indexed book, uint8 reason);</code></pre>
       <div class="cards c3 foot">
         <a class="card" href="#risks"><span class="ct">Risks</span><span class="cd">The full list, including what we have no answer to.</span></a>
         <a class="card" href="#tranches"><span class="ct">Senior and junior</span><span class="cd">The part with the fewest precedents.</span></a>
-        <a class="card" href="#liquidations"><span class="ct">Liquidations</span><span class="cd">Fixed bonus versus reverse auction, worked through.</span></a>
+        <a class="card" href="#liquidations"><span class="ct">Liquidations</span><span class="cd">Fixed bonus versus auction, worked through.</span></a>
       </div>
     </article>
 
